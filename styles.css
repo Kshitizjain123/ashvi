@@ -251,16 +251,14 @@ img { display: block; max-width: 100%; }
 .logo {
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
+  flex-shrink: 0;
 }
 .logo img.logo-img {
   display: block;
-  height: 56px;
-  width: 56px;
-  object-fit: cover;
-  object-position: center;
-  transform: scale(1.3);
+  height: 72px;
+  width: auto;
+  object-fit: contain;
   mix-blend-mode: multiply;
-  flex-shrink: 0;
 }
 .logo .logo-clip {
   width: 56px;
@@ -1446,4 +1444,5 @@ img.footer-logo-img {
   .nav-inner { padding: 16px 20px; gap: 16px; }
   .pdp-wrap { padding: 32px 20px 80px; }
   .hero-body { max-width: 100%; }
+  .logo img.logo-img { height: 52px; }
 }

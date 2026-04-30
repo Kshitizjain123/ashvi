@@ -40,17 +40,11 @@ const LogoMark = ({ size = 30 }) => (
 );
 
 const Logo = ({ onClick }) => (
-  <div className="logo" onClick={onClick} style={{ width: 168, height: 132, overflow: 'visible', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: -8, marginBottom: -8 }}>
+  <div className="logo" onClick={onClick}>
     <img
       src="assets/logo-ashvi.png"
       alt="Ashvi, Flavours of Elegance"
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain',
-        objectPosition: 'center',
-        display: 'block'
-      }}
+      className="logo-img"
     />
   </div>
 );
