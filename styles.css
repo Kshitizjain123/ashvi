@@ -255,7 +255,7 @@ img { display: block; max-width: 100%; }
 }
 .logo img.logo-img {
   display: block;
-  height: 72px;
+  height: 110px;
   width: auto;
   object-fit: contain;
   mix-blend-mode: multiply;
@@ -1454,7 +1454,7 @@ img.footer-logo-img {
   .nav-inner { padding: 16px 20px; gap: 16px; }
   .pdp-wrap { padding: 32px 20px 80px; }
   .hero-body { max-width: 100%; }
-  .logo img.logo-img { height: 52px; }
+  .logo img.logo-img { height: 72px; }
   .about-hero { min-height: unset; }
   .about-hero-text { padding: 48px 20px; }
   .page { overflow: hidden; }
