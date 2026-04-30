@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ashvi, Flavours of Elegance</title>
+  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%234F3E35'/%3E%3Ctext x='16' y='22' font-family='Playfair Display' font-size='18' fill='%23EAE0D5' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="data.js?v=14"></script>
+  <script type="text/babel" src="tweaks-panel.jsx?v=14"></script>
+  <script type="text/babel" src="components.jsx?v=14"></script>
+  <script type="text/babel" src="pages.jsx?v=14"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "showTicker": true,
+      "showBanners": true,
+      "showQuote": true,
+      "showReviews": true,
+      "accentTone": "warm"
+    }/*EDITMODE-END*/;
+
+    function App() {
+      const { CATEGORIES, PRODUCTS, TICKER_ITEMS, REVIEWS } = window.ASHVI_DATA;
+      const [route, setRoute] = useState({ page: 'home' });
+      const [cart, setCart] = useState([]);
+      const [cartOpen, setCartOpen] = useState(false);
+      const [searchOpen, setSearchOpen] = useState(false);
+      const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      const navigate = (next) => {
+        setRoute(next);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      };
+
+      const addToCart = (id, qty = 1) => {
+        setCart(c => {
+          const existing = c.find(x => x.id === id);
+          if (existing) return c.map(x => x.id === id ? { ...x, qty: x.qty + qty } : x);
+          return [...c, { id, qty }];
+        });
+        setCartOpen(true);
+      };
+      const updateQty = (id, qty) => {
+        if (qty <= 0) return setCart(c => c.filter(x => x.id !== id));
+        setCart(c => c.map(x => x.id === id ? { ...x, qty } : x));
+      };
+      const removeItem = (id) => setCart(c => c.filter(x => x.id !== id));
+      const cartCount = cart.reduce((s, c) => s + c.qty, 0);
+
+      // Apply accent tone tweak
+      useEffect(() => {
+        const root = document.documentElement;
+        const tones = {
+          warm: { sandstone: '#EAE0D5', cream: '#F9F6F0', gold: '#C1A68D' },
+          cool: { sandstone: '#E1DDD3', cream: '#F4F2EC', gold: '#A89B89' },
+          deep: { sandstone: '#D9CDB9', cream: '#EFE9DD', gold: '#A88766' }
+        };
+        const t = tones[tweaks.accentTone] || tones.warm;
+        root.style.setProperty('--sandstone', t.sandstone);
+        root.style.setProperty('--cream', t.cream);
+        root.style.setProperty('--gold', t.gold);
+      }, [tweaks.accentTone]);
+
+      let pageEl;
+      if (route.page === 'home') {
+        pageEl = <HomePage navigate={navigate} addToCart={addToCart} products={PRODUCTS} categories={CATEGORIES} reviews={REVIEWS} />;
+      } else if (route.page === 'category') {
+        pageEl = <CategoryPage categoryId={route.categoryId} navigate={navigate} addToCart={addToCart} products={PRODUCTS} categories={CATEGORIES} />;
+      } else if (route.page === 'product') {
+        pageEl = <ProductPage productId={route.productId} navigate={navigate} addToCart={addToCart} products={PRODUCTS} />;
+      } else if (route.page === 'about') {
+        pageEl = <AboutPage navigate={navigate} />;
+      }
+
+      const screenLabel = {
+        home: '01 Home', category: '02 Category', product: '03 Product Detail', about: '04 About'
+      }[route.page];
+
+      return (
+        <div data-screen-label={screenLabel}>
+          {tweaks.showTicker && <Ticker items={TICKER_ITEMS} />}
+          <Navbar
+            currentPage={route.page}
+            currentCategoryId={route.categoryId}
+            navigate={navigate}
+            cartCount={cartCount}
+            openCart={() => setCartOpen(true)}
+            openSearch={() => setSearchOpen(true)}
+            categories={CATEGORIES}
+          />
+          {pageEl}
+          <Footer navigate={navigate} />
+          <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cart} products={PRODUCTS} updateQty={updateQty} removeItem={removeItem} />
+          <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} products={PRODUCTS} navigate={navigate} />
+
+          <TweaksPanel title="Tweaks">
+            <TweakSection title="Sections">
+              <TweakToggle label="Show top ticker" value={tweaks.showTicker} onChange={(v) => setTweak('showTicker', v)} />
+              <TweakToggle label="Show promo banners" value={tweaks.showBanners} onChange={(v) => setTweak('showBanners', v)} />
+              <TweakToggle label="Show trust quote" value={tweaks.showQuote} onChange={(v) => setTweak('showQuote', v)} />
+              <TweakToggle label="Show customer reviews" value={tweaks.showReviews} onChange={(v) => setTweak('showReviews', v)} />
+            </TweakSection>
+            <TweakSection title="Palette">
+              <TweakRadio
+                label="Tone"
+                value={tweaks.accentTone}
+                onChange={(v) => setTweak('accentTone', v)}
+                options={[
+                  { value: 'warm', label: 'Warm' },
+                  { value: 'cool', label: 'Cool' },
+                  { value: 'deep', label: 'Deep' }
+                ]}
+              />
+            </TweakSection>
+            <TweakSection title="Quick navigate">
+              <TweakButton label="Home" onClick={() => navigate({ page: 'home' })} />
+              <TweakButton label="Signature category" onClick={() => navigate({ page: 'category', categoryId: 'signature' })} />
+              <TweakButton label="Sample product" onClick={() => navigate({ page: 'product', productId: 'rose-bouquet' })} />
+              <TweakButton label="About" onClick={() => navigate({ page: 'about' })} />
+            </TweakSection>
+          </TweaksPanel>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
