@@ -11,7 +11,6 @@ const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
         <div className="hero-grid">
           <div>
             <div className="hero-eyebrow-row">
-              <span className="hero-rule"></span>
               <span className="eyebrow">Hand sculpted in Jaipur</span>
             </div>
             <h1 className="hero-title">
