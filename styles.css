@@ -142,6 +142,11 @@ img { display: block; max-width: 100%; }
   position: relative;
 }
 .nav-icon:hover { background: var(--cream-warm); }
+
+.floating-cart {
+  display: none;
+}
+
 .nav-cart-count {
   position: absolute;
   top: 2px; right: 2px;
@@ -1462,21 +1467,31 @@ img.footer-logo-img {
   .about-hero-text { padding: 48px 20px; }
   .page { overflow-x: clip; }
   .nav-inner { padding: 24px 20px; }
-  .nav-icon-cart {
+  .nav-icon-cart { display: none; }
+  .floating-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: fixed;
-    bottom: 24px;
+    bottom: 28px;
     right: 20px;
-    z-index: 100;
-    width: 52px; height: 52px;
+    z-index: 200;
+    width: 56px; height: 56px;
     border-radius: 50%;
     background: var(--espresso);
     color: var(--cream);
-    box-shadow: 0 4px 16px rgba(79, 62, 53, 0.35);
+    box-shadow: 0 4px 20px rgba(79, 62, 53, 0.4);
   }
-  .nav-icon-cart:hover { background: var(--charcoal); }
-  .nav-icon-cart .nav-cart-count {
+  .floating-cart:hover { background: var(--charcoal); }
+  .floating-cart-count {
+    position: absolute;
     top: 4px; right: 4px;
     background: var(--gold);
     color: var(--espresso);
+    font-size: 10px;
+    font-weight: 700;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
   }
 }
