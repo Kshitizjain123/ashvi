@@ -1423,9 +1423,19 @@ img.footer-logo-img {
   .about-hero { grid-template-columns: 1fr; }
   .about-hero-img { min-height: 400px; }
   .footer-top { grid-template-columns: 1fr 1fr; }
-  .nav-inner { grid-template-columns: auto 1fr auto; }
+  .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
+  .nav-inner .logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .mobile-menu-scrim { display: block; pointer-events: none; }
 }
 @media (max-width: 720px) {
