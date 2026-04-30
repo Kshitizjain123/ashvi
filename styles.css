@@ -70,7 +70,7 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   padding: 10px 0;
-  overflow: hidden;
+  overflow: clip;
   position: relative;
 }
 .ticker-track {
@@ -94,9 +94,11 @@ img { display: block; max-width: 100%; }
 .nav {
   background: #EAE0D5;
   border-bottom: 1px solid rgba(193, 166, 141, 0.25);
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 50;
+  will-change: transform;
 }
 .nav-inner {
   display: grid;
