@@ -101,10 +101,13 @@
           />
           {pageEl}
           <Footer navigate={navigate} />
-          <button className="floating-cart" onClick={() => setCartOpen(true)} aria-label="Cart">
-            <Icon name="bag" size={20} />
-            {cartCount > 0 && <span className="floating-cart-count">{cartCount}</span>}
-          </button>
+          {ReactDOM.createPortal(
+            <button className="floating-cart" onClick={() => setCartOpen(true)} aria-label="Cart">
+              <Icon name="bag" size={20} />
+              {cartCount > 0 && <span className="floating-cart-count">{cartCount}</span>}
+            </button>,
+            document.body
+          )}
           <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cart} products={PRODUCTS} updateQty={updateQty} removeItem={removeItem} />
           <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} products={PRODUCTS} navigate={navigate} />
 
