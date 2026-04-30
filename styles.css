@@ -1457,13 +1457,8 @@ img.footer-logo-img {
   .logo img.logo-img { height: 72px; }
   .about-hero { min-height: unset; }
   .about-hero-text { padding: 48px 20px; }
-  .page { overflow: hidden; padding-top: 116px; }
-  .nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 50;
-  }
-  .nav-inner { padding: 20px; }
+  .page { overflow: hidden; }
+  .nav-inner { padding: 24px 20px; }
   .nav-icon-cart {
     position: fixed;
     bottom: 24px;
