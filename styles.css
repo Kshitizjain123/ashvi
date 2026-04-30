@@ -1442,7 +1442,7 @@ img.footer-logo-img {
   .product-grid, .product-grid.three { grid-template-columns: repeat(2, 1fr); }
   .cat-grid { grid-template-columns: 1fr; }
   .review-grid { grid-template-columns: 1fr; }
-  .banners { grid-template-columns: 1fr; }
+  .banners { display: none; }
   .about-pillars { grid-template-columns: 1fr; }
   .about-pillar { border-right: none; border-bottom: 1px solid rgba(193, 166, 141, 0.4); padding: 40px 20px; }
   .footer-top { grid-template-columns: 1fr; gap: 40px; }
