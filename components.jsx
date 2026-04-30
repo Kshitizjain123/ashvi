@@ -99,7 +99,7 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
           <button className="nav-icon nav-icon-account" aria-label="Account">
             <Icon name="user" size={18} />
           </button>
-          <button className="nav-icon" onClick={openCart} aria-label="Cart">
+          <button className="nav-icon nav-icon-cart" onClick={openCart} aria-label="Cart">
             <Icon name="bag" size={18} />
             {cartCount > 0 && <span className="nav-cart-count">{cartCount}</span>}
           </button>
