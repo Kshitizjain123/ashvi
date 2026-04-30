@@ -44,7 +44,7 @@ const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
       </section>
 
       {/* Promo banners */}
-      <section className="section section-cream tight">
+      <section className="section section-cream tight banners-section">
         <div className="container">
           <div className="banners">
             <div className="banner" onClick={() => navigate({ page: 'category', categoryId: 'gifting' })}>
