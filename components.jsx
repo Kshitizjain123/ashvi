@@ -77,36 +77,8 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-  return (
-    <header className="nav">
-      <div className="nav-inner">
-        <button className="nav-hamburger" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
-          <span></span><span></span><span></span>
-        </button>
-        <nav className="nav-links">
-          <a className={'nav-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
-          {categories.map(c => (
-            <a key={c.id} className={'nav-link' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
-              {c.name}
-            </a>
-          ))}
-        </nav>
-        <Logo onClick={() => navigate({ page: 'home' })} />
-        <div className="nav-actions">
-          <button className="nav-icon nav-icon-search" onClick={openSearch} aria-label="Search">
-            <Icon name="search" size={18} />
-          </button>
-          <button className="nav-icon nav-icon-account" aria-label="Account">
-            <Icon name="user" size={18} />
-          </button>
-          <button className="nav-icon nav-icon-cart" onClick={openCart} aria-label="Cart">
-            <Icon name="bag" size={18} />
-            {cartCount > 0 && <span className="nav-cart-count">{cartCount}</span>}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile menu drawer */}
+  const menuPortal = ReactDOM.createPortal(
+    <>
       <div className={'mobile-menu-scrim' + (menuOpen ? ' open' : '')} onClick={() => setMenuOpen(false)}></div>
       <aside className={'mobile-menu' + (menuOpen ? ' open' : '')} aria-hidden={!menuOpen}>
         <div className="mobile-menu-head">
@@ -134,7 +106,42 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
         </div>
         <p className="mobile-menu-tag">Flavours of elegance, hand poured in Jaipur.</p>
       </aside>
-    </header>
+    </>,
+    document.body
+  );
+
+  return (
+    <>
+      <header className="nav">
+        <div className="nav-inner">
+          <button className="nav-hamburger" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
+            <span></span><span></span><span></span>
+          </button>
+          <nav className="nav-links">
+            <a className={'nav-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
+            {categories.map(c => (
+              <a key={c.id} className={'nav-link' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+                {c.name}
+              </a>
+            ))}
+          </nav>
+          <Logo onClick={() => navigate({ page: 'home' })} />
+          <div className="nav-actions">
+            <button className="nav-icon nav-icon-search" onClick={openSearch} aria-label="Search">
+              <Icon name="search" size={18} />
+            </button>
+            <button className="nav-icon nav-icon-account" aria-label="Account">
+              <Icon name="user" size={18} />
+            </button>
+            <button className="nav-icon nav-icon-cart" onClick={openCart} aria-label="Cart">
+              <Icon name="bag" size={18} />
+              {cartCount > 0 && <span className="nav-cart-count">{cartCount}</span>}
+            </button>
+          </div>
+        </div>
+      </header>
+      {menuPortal}
+    </>
   );
 };
 
