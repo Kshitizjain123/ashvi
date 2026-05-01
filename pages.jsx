@@ -28,7 +28,7 @@ const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
             </div>
           </div>
           <div className="hero-visual">
-            <img src="assets/p-rose-bouquet.jpeg" alt="Rose Bouquet Candle" style={{ gridRow: '1 / span 2', gridColumn: 1, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src="assets/brand-flatlay.webp" alt="Ashvi brand flatlay" style={{ gridRow: '1 / span 2', gridColumn: 1, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
             <img src="assets/p-bubble-cube.jpeg" alt="Bubble Cube" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             <img src="assets/p-kulhad-rose.jpeg" alt="Kulhad Rose" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             <div className="hero-stamp">
