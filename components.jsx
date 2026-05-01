@@ -5,29 +5,31 @@ const fmtPrice = (n) => '₹ ' + n.toLocaleString('en-IN');
 
 // ----- Icons -----
 const PHOSPHOR_MAP = {
-  search:   ['ph-magnifying-glass', 'regular'],
-  bag:      ['ph-shopping-bag',     'regular'],
-  user:     ['ph-user',             'regular'],
-  close:    ['ph-x',                'regular'],
-  arrow:    ['ph-arrow-right',      'regular'],
-  arrowSm:  ['ph-arrow-right',      'regular'],
-  plus:     ['ph-plus',             'regular'],
-  minus:    ['ph-minus',            'regular'],
-  chevron:  ['ph-caret-down',       'regular'],
-  star:     ['ph-star',             'fill'],
-  leaf:     ['ph-leaf',             'regular'],
-  spark:    ['ph-sparkle',          'regular'],
-  truck:    ['ph-truck',            'regular'],
-  box:      ['ph-package',          'regular'],
-  shield:   ['ph-shield-check',     'regular'],
-  heart:    ['ph-heart',            'regular'],
-  sliders:  ['ph-sliders-horizontal','regular'],
-  flame:    ['ph-fire',             'regular'],
+  search:   'ph-magnifying-glass',
+  bag:      'ph-shopping-bag',
+  user:     'ph-user',
+  close:    'ph-x',
+  arrow:    'ph-arrow-right',
+  arrowSm:  'ph-arrow-right',
+  plus:     'ph-plus',
+  minus:    'ph-minus',
+  chevron:  'ph-caret-down',
+  star:     'ph-star-fill',
+  leaf:     'ph-leaf',
+  spark:    'ph-sparkle',
+  truck:    'ph-truck',
+  box:      'ph-package',
+  shield:   'ph-shield-check',
+  heart:    'ph-heart',
+  sliders:  'ph-sliders-horizontal',
+  flame:    'ph-fire',
 };
 
 const Icon = ({ name, size = 18 }) => {
-  const [tag, weight] = PHOSPHOR_MAP[name] || ['ph-question', 'regular'];
-  return React.createElement(tag, { size: String(size), weight });
+  const icon = PHOSPHOR_MAP[name] || 'ph-question';
+  const isFill = icon.endsWith('-fill');
+  const cls = isFill ? `ph-fill ${icon}` : `ph ${icon}`;
+  return <i className={cls} style={{ fontSize: size, lineHeight: 1, display: 'inline-flex' }} />;
 };
 
 // ----- Logo -----
