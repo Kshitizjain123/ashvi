@@ -1474,6 +1474,8 @@ img.footer-logo-img {
   .pdp-price { font-size: 24px; }
   .pdp-actions { gap: 8px; }
   .ingredient-list { grid-template-columns: 1fr; }
+  .ingredient-pill:nth-last-child(-n+2) { border-bottom: none; }
+  .ingredient-pill:last-child { border-bottom: 1px solid rgba(193, 166, 141, 0.25); }
   .ingredients { padding: 64px 0; margin-top: 48px; }
   .section-head { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 40px; }
   .hero-body { max-width: 100%; }
