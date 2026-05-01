@@ -224,7 +224,7 @@ const SearchOverlay = ({ open, onClose, products, navigate }) => {
     const t = q.toLowerCase();
     return products.filter(p => p.name.toLowerCase().includes(t) || p.categoryName.toLowerCase().includes(t) || p.tagline.toLowerCase().includes(t)).slice(0, 5);
   }, [q, products]);
-  return (
+  return ReactDOM.createPortal(
     <div className={'search-overlay' + (open ? ' open' : '')} onClick={onClose}>
       <div className="search-panel" onClick={(e) => e.stopPropagation()}>
         <div className="search-input-row">
@@ -249,7 +249,8 @@ const SearchOverlay = ({ open, onClose, products, navigate }) => {
           {q && results.length === 0 && <p style={{ color: 'var(--espresso-soft)', fontSize: 14 }}>No results, try "candle" or "rose"</p>}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -258,53 +259,54 @@ const CartDrawer = ({ open, onClose, cart, products, updateQty, removeItem }) =>
   const items = cart.map(c => ({ ...c, product: products.find(p => p.id === c.id) })).filter(i => i.product);
   const subtotal = items.reduce((s, i) => s + i.product.price * i.qty, 0);
   const shipping = subtotal > 1499 || subtotal === 0 ? 0 : 89;
-  return (
+  return ReactDOM.createPortal(
     <>
       <div className={'drawer-backdrop' + (open ? ' open' : '')} onClick={onClose} />
       <aside className={'drawer' + (open ? ' open' : '')}>
-        <div className="drawer-head">
+        <div className=”drawer-head”>
           <h3>Your Cart <span style={{ color: 'var(--gold)', fontSize: 16 }}>· {items.length}</span></h3>
-          <button className="drawer-close" onClick={onClose}><Icon name="close" size={18} /></button>
+          <button className=”drawer-close” onClick={onClose}><Icon name=”close” size={18} /></button>
         </div>
         {items.length === 0 ? (
-          <div className="drawer-empty">
-            <span className="quote-mark">“</span>
+          <div className=”drawer-empty”>
+            <span className=”quote-mark”>”</span>
             <p>Your cart is quiet. <br/>Begin with something hand poured.</p>
           </div>
         ) : (
-          <div className="drawer-items">
+          <div className=”drawer-items”>
             {items.map(i => (
-              <div key={i.id} className="cart-item">
+              <div key={i.id} className=”cart-item”>
                 {i.product.image
-                  ? <img src={i.product.image} alt={i.product.name} className="cart-item-img" style={{ objectFit: 'cover' }} />
-                  : <div className={'placeholder cart-item-img'}><span className="placeholder-label" style={{ fontSize: 8 }}>{i.product.name.split(' ')[0]}</span></div>}
-                <div className="cart-item-info">
+                  ? <img src={i.product.image} alt={i.product.name} className=”cart-item-img” style={{ objectFit: 'cover' }} />
+                  : <div className={'placeholder cart-item-img'}><span className=”placeholder-label” style={{ fontSize: 8 }}>{i.product.name.split(' ')[0]}</span></div>}
+                <div className=”cart-item-info”>
                   <h4>{i.product.name}</h4>
-                  <div className="cart-item-cat">{i.product.categoryName}</div>
-                  <div className="qty-row">
-                    <button className="qty-btn" onClick={() => updateQty(i.id, i.qty - 1)}><Icon name="minus" size={12} /></button>
-                    <span className="qty-num">{i.qty}</span>
-                    <button className="qty-btn" onClick={() => updateQty(i.id, i.qty + 1)}><Icon name="plus" size={12} /></button>
+                  <div className=”cart-item-cat”>{i.product.categoryName}</div>
+                  <div className=”qty-row”>
+                    <button className=”qty-btn” onClick={() => updateQty(i.id, i.qty - 1)}><Icon name=”minus” size={12} /></button>
+                    <span className=”qty-num”>{i.qty}</span>
+                    <button className=”qty-btn” onClick={() => updateQty(i.id, i.qty + 1)}><Icon name=”plus” size={12} /></button>
                   </div>
                 </div>
-                <div className="cart-item-right">
-                  <div className="cart-item-price">{fmtPrice(i.product.price * i.qty)}</div>
-                  <button className="cart-remove" onClick={() => removeItem(i.id)}>Remove</button>
+                <div className=”cart-item-right”>
+                  <div className=”cart-item-price”>{fmtPrice(i.product.price * i.qty)}</div>
+                  <button className=”cart-remove” onClick={() => removeItem(i.id)}>Remove</button>
                 </div>
               </div>
             ))}
           </div>
         )}
         {items.length > 0 && (
-          <div className="drawer-foot">
-            <div className="drawer-row"><span className="l">Subtotal</span><span style={{ fontWeight: 600 }}>{fmtPrice(subtotal)}</span></div>
-            <div className="drawer-row"><span className="l">Shipping</span><span style={{ fontWeight: 600 }}>{shipping === 0 ? 'Complimentary' : fmtPrice(shipping)}</span></div>
-            <div className="drawer-row total"><span className="l" style={{ fontSize: 14 }}>Total · incl. tax</span><span className="v">{fmtPrice(subtotal + shipping)}</span></div>
-            <button className="btn"><span>Proceed to Checkout</span><Icon name="arrow" size={16} /></button>
+          <div className=”drawer-foot”>
+            <div className=”drawer-row”><span className=”l”>Subtotal</span><span style={{ fontWeight: 600 }}>{fmtPrice(subtotal)}</span></div>
+            <div className=”drawer-row”><span className=”l”>Shipping</span><span style={{ fontWeight: 600 }}>{shipping === 0 ? 'Complimentary' : fmtPrice(shipping)}</span></div>
+            <div className=”drawer-row total”><span className=”l” style={{ fontSize: 14 }}>Total · incl. tax</span><span className=”v”>{fmtPrice(subtotal + shipping)}</span></div>
+            <button className=”btn”><span>Proceed to Checkout</span><Icon name=”arrow” size={16} /></button>
           </div>
         )}
       </aside>
-    </>
+    </>,
+    document.body
   );
 };
 
