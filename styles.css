@@ -305,6 +305,7 @@ img.footer-logo-img {
   border: 1px solid var(--espresso);
   background: var(--espresso);
   color: var(--cream);
+  white-space: nowrap;
   transition: all 0.25s ease;
   cursor: pointer;
 }
@@ -336,6 +337,7 @@ img.footer-logo-img {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 500;
+  white-space: nowrap;
   border-bottom: 1px solid var(--espresso);
   padding-bottom: 4px;
   transition: gap 0.25s ease;
