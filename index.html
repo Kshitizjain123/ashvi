@@ -83,10 +83,12 @@
         pageEl = <ProductPage productId={route.productId} navigate={navigate} addToCart={addToCart} products={PRODUCTS} />;
       } else if (route.page === 'about') {
         pageEl = <AboutPage navigate={navigate} />;
+      } else if (route.page === 'privacy') {
+        pageEl = <PrivacyPage navigate={navigate} />;
       }
 
       const screenLabel = {
-        home: '01 Home', category: '02 Category', product: '03 Product Detail', about: '04 About'
+        home: '01 Home', category: '02 Category', product: '03 Product Detail', about: '04 About', privacy: '05 Privacy'
       }[route.page];
 
       return (

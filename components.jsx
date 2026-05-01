@@ -204,7 +204,7 @@ const Footer = ({ navigate }) => (
       <div className="footer-bottom">
         <span>© 2026 Ashvi. All rights reserved.</span>
         <div className="links">
-          <a>Privacy</a><a>Terms</a><a>Cookies</a>
+          <a onClick={() => navigate({ page: 'privacy' })}>Privacy</a><a>Terms</a><a>Cookies</a>
         </div>
       </div>
     </div>

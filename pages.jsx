@@ -513,4 +513,67 @@ const AboutPage = ({ navigate }) =>
   </div>;
 
 
-Object.assign(window, { HomePage, CategoryPage, ProductPage, AboutPage });
+// ----- PRIVACY POLICY -----
+const PrivacyPage = ({ navigate }) => (
+  <div className="page">
+    <div className="container-tight" style={{ padding: '72px 32px 100px' }}>
+      <span className="eyebrow">Legal</span>
+      <h1 className="section-title" style={{ marginTop: 12, marginBottom: 8 }}>Privacy Policy</h1>
+      <p style={{ color: 'var(--espresso-soft)', marginBottom: 48 }}>Last updated: May 2026</p>
+
+      {[
+        {
+          title: 'Who We Are',
+          body: 'Ashvi ("we", "us", "our") is a handcrafted candle and gifting brand based in Jaipur, Rajasthan, India. This Privacy Policy explains how we collect, use, and protect information when you visit our website or place an order with us.'
+        },
+        {
+          title: 'Information We Collect',
+          body: 'When you browse our site we may collect your IP address, browser type, and pages visited to understand how our site is used. When you place an order or contact us, we collect your name, email address, phone number, and delivery address. We do not store payment card details — all transactions are processed securely through third-party payment providers.'
+        },
+        {
+          title: 'How We Use Your Information',
+          body: 'We use your information to fulfil and deliver your orders, send order confirmations and shipping updates, respond to enquiries and customer support requests, and occasionally send you news about new collections or offers (you can opt out at any time).'
+        },
+        {
+          title: 'Cookies',
+          body: 'Our website uses essential cookies to keep the site functioning. We do not use third-party advertising or tracking cookies. You can disable cookies in your browser settings, though some features may not work as intended.'
+        },
+        {
+          title: 'Sharing Your Information',
+          body: 'We do not sell, rent, or trade your personal information. We share data only with trusted partners who help us operate — such as shipping couriers and payment processors — and only to the extent necessary to complete your order.'
+        },
+        {
+          title: 'Data Retention',
+          body: 'We retain your order information for as long as required by applicable Indian tax and business regulations. If you would like your personal data deleted, please write to us and we will fulfil your request within 30 days, subject to any legal obligations.'
+        },
+        {
+          title: 'Your Rights',
+          body: 'You have the right to access, correct, or request deletion of the personal data we hold about you. To exercise any of these rights, please contact us at the address below.'
+        },
+        {
+          title: 'Security',
+          body: 'We take reasonable precautions to protect your information. Our website is served over HTTPS and we limit access to personal data to authorised team members only.'
+        },
+        {
+          title: 'Changes to This Policy',
+          body: 'We may update this policy from time to time. Any changes will be posted on this page with an updated date. Continued use of our website after changes are posted constitutes your acceptance of the revised policy.'
+        },
+        {
+          title: 'Contact Us',
+          body: 'For any questions about this Privacy Policy or your personal data, please reach out to us at hello@ashvi.in or write to us at Ashvi, Jaipur, Rajasthan, India.'
+        },
+      ].map(({ title, body }) => (
+        <div key={title} style={{ marginBottom: 40, paddingBottom: 40, borderBottom: '1px solid rgba(193,166,141,0.25)' }}>
+          <h3 style={{ fontFamily: 'var(--serif)', fontSize: 20, fontWeight: 500, marginBottom: 12 }}>{title}</h3>
+          <p style={{ color: 'var(--espresso-soft)', lineHeight: 1.85 }}>{body}</p>
+        </div>
+      ))}
+
+      <button className="btn-ghost" onClick={() => navigate({ page: 'home' })} style={{ marginTop: 8 }}>
+        <span>Back to Home</span><Icon name="arrow" size={14} className="arrow" />
+      </button>
+    </div>
+  </div>
+);
+
+Object.assign(window, { HomePage, CategoryPage, ProductPage, AboutPage, PrivacyPage });
