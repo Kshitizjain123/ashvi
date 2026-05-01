@@ -4,29 +4,30 @@ const { useState, useEffect, useRef, useMemo } = React;
 const fmtPrice = (n) => '₹ ' + n.toLocaleString('en-IN');
 
 // ----- Icons -----
+const PHOSPHOR_MAP = {
+  search:   ['ph-magnifying-glass', 'regular'],
+  bag:      ['ph-shopping-bag',     'regular'],
+  user:     ['ph-user',             'regular'],
+  close:    ['ph-x',                'regular'],
+  arrow:    ['ph-arrow-right',      'regular'],
+  arrowSm:  ['ph-arrow-right',      'regular'],
+  plus:     ['ph-plus',             'regular'],
+  minus:    ['ph-minus',            'regular'],
+  chevron:  ['ph-caret-down',       'regular'],
+  star:     ['ph-star',             'fill'],
+  leaf:     ['ph-leaf',             'regular'],
+  spark:    ['ph-sparkle',          'regular'],
+  truck:    ['ph-truck',            'regular'],
+  box:      ['ph-package',          'regular'],
+  shield:   ['ph-shield-check',     'regular'],
+  heart:    ['ph-heart',            'regular'],
+  sliders:  ['ph-sliders-horizontal','regular'],
+  flame:    ['ph-fire',             'regular'],
+};
+
 const Icon = ({ name, size = 18 }) => {
-  const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' };
-  const paths = {
-    search: <><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></>,
-    bag: <><path d="M6 7h12l-1 13H7L6 7Z" /><path d="M9 7a3 3 0 0 1 6 0" /></>,
-    user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
-    close: <><path d="M6 6l12 12M18 6L6 18" /></>,
-    arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
-    arrowSm: <><path d="M3 8h10" /><path d="m9 4 4 4-4 4" /></>,
-    plus: <><path d="M12 5v14M5 12h14" /></>,
-    minus: <><path d="M5 12h14" /></>,
-    chevron: <><path d="m6 9 6 6 6-6" /></>,
-    star: <><path d="M12 2l3 7 7 .8-5 5 1.5 7L12 18l-6.5 3.8L7 14.8l-5-5 7-.8L12 2z" fill="currentColor" stroke="none" /></>,
-    leaf: <><path d="M11 20A7 7 0 0 1 9.8 6.5C15 4 19 4 19 4s-1 11-7 14a7 7 0 0 1-1 2Z" /><path d="M19 4S6 9 9.5 16" /></>,
-    spark: <><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6 8 8M16 16l2.4 2.4M5.6 18.4 8 16M16 8l2.4-2.4" /></>,
-    truck: <><path d="M3 6h13v9H3z" /><path d="M16 9h4l2 3v3h-6" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /></>,
-    box: <><path d="m3 7 9-4 9 4-9 4-9-4Z" /><path d="M3 7v10l9 4 9-4V7" /><path d="M12 11v10" /></>,
-    shield: <><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z" /></>,
-    heart: <><path d="M12 21s-7-4.5-9-9.5A5 5 0 0 1 12 6a5 5 0 0 1 9 5.5C19 16.5 12 21 12 21Z" /></>,
-    sliders: <><path d="M4 6h10" /><path d="M18 6h2" /><circle cx="16" cy="6" r="2" /><path d="M4 12h4" /><path d="M12 12h8" /><circle cx="10" cy="12" r="2" /><path d="M4 18h12" /><path d="M20 18h0" /><circle cx="18" cy="18" r="2" /></>,
-    flame: <><path d="M12 21c-4 0-7-3-7-7 0-3 2-5 3-7 0 3 2 4 3 3 0-3-1-6 0-8 1 2 5 5 5 11 0 5-3 8-4 8Z" /></>
-  };
-  return <svg {...common}>{paths[name]}</svg>;
+  const [tag, weight] = PHOSPHOR_MAP[name] || ['ph-question', 'regular'];
+  return React.createElement(tag, { size: String(size), weight });
 };
 
 // ----- Logo -----
