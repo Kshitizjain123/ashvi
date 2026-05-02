@@ -36,6 +36,7 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'https://kshitizjain123.github.io',
+    'http://localhost:8080',
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:5175',
