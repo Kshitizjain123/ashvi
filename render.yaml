@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: ashvi-backend
+    env: node
+    region: singapore
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run migrate
+    startCommand: node server.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ashvi-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: FRONTEND_URL
+        value: https://kshitizjain123.github.io
+      - key: CLOUDINARY_CLOUD_NAME
+        value: placeholder
+      - key: CLOUDINARY_API_KEY
+        value: placeholder
+      - key: CLOUDINARY_API_SECRET
+        value: placeholder
+      - key: RAZORPAY_KEY_ID
+        value: placeholder
+      - key: RAZORPAY_KEY_SECRET
+        value: placeholder
+
+databases:
+  - name: ashvi-db
+    databaseName: ashvi
+    user: ashvi
+    plan: free
+    region: singapore
