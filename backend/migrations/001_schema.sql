@@ -267,7 +267,7 @@ VALUES (
   gen_random_uuid(),
   'Super Admin',
   'admin@ashvi.in',
-  '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY8t3zC5kDJ6Xm2',
+  '$2a$12$ppXh88jzseSH7zvJ625yV.4cKkui/BAJL9Fd1bVcqeRQeFiGfLM56',
   'superadmin'
 ) ON CONFLICT (email) DO NOTHING;
 
