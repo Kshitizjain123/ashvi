@@ -531,6 +531,16 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal" style="width:400px;text-align:center">
+    <p id="confirm-modal-text" style="font-size:16px;margin-bottom:24px"></p>
+    <div class="modal-footer" style="justify-content:center">
+      <button class="btn-sm" onclick="resolveConfirm(false)">Cancel</button>
+      <button class="btn-sm btn-danger" onclick="resolveConfirm(true)">Remove</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const API = window.location.hostname === 'localhost'
     ? 'http://localhost:3002/v1'
@@ -538,6 +548,18 @@
   let token = localStorage.getItem('ashvi_admin_token')
   let categories = []
   let loadedProducts = []
+  let resolveConfirm = null
+
+  function showConfirm(text) {
+    return new Promise(resolve => {
+      document.getElementById('confirm-modal-text').textContent = text
+      document.getElementById('confirm-modal').classList.add('open')
+      resolveConfirm = (val) => {
+        document.getElementById('confirm-modal').classList.remove('open')
+        resolve(val)
+      }
+    })
+  }
   let editingProductId = null
 
   const api = async (path, opts = {}) => {
@@ -663,8 +685,8 @@
     document.getElementById('p-category').innerHTML = '<option value="">Select...</option>' +
       categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
     if (!prodData.success) return
-    loadedProducts = prodData.products
-    document.getElementById('products-tbody').innerHTML = prodData.products.map(p => `
+    loadedProducts = prodData.products.filter(p => p.is_active !== false)
+    document.getElementById('products-tbody').innerHTML = loadedProducts.map(p => `
       <tr>
         <td><strong>${p.name}</strong><br><small style="color:var(--muted);font-family:sans-serif">${p.tagline||''}</small></td>
         <td style="font-family:sans-serif;font-size:13px">${p.category_name||'—'}</td>
@@ -684,14 +706,8 @@
     if (!btn) return
     const id = btn.dataset.deleteProduct
 
-    if (btn.dataset.confirming !== 'true') {
-      btn.dataset.confirming = 'true'
-      btn.textContent = 'Sure?'
-      setTimeout(() => { if (btn.dataset.confirming) { btn.dataset.confirming = ''; btn.textContent = 'Remove' } }, 3000)
-      return
-    }
-
-    btn.dataset.confirming = ''
+    const ok = await showConfirm('Remove this product? This cannot be undone.')
+    if (!ok) return
     btn.disabled = true
     btn.textContent = 'Removing…'
     const res = await api('/admin/products/' + id, { method: 'DELETE' })
