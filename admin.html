@@ -152,6 +152,41 @@
     .upload-zone p { font-family: 'Figtree', sans-serif; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
     .upload-zone .preview { max-width: 160px; max-height: 160px; border-radius: 6px; margin: 0 auto 8px; display: block; }
     .upload-progress { font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); text-align: center; margin-top: 8px; }
+
+    /* ── BOTTOM NAV (mobile only) ── */
+    .bottom-nav { display: none; }
+
+    @media (max-width: 720px) {
+      .sidebar { display: none; }
+      .shell { flex-direction: column; }
+      .main { height: 100vh; padding-bottom: 64px; }
+      .content { padding: 16px; }
+      .topbar { padding: 14px 16px; }
+
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        height: 60px;
+        background: var(--brown);
+        z-index: 200;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .bottom-nav::-webkit-scrollbar { display: none; }
+      .bottom-nav-item {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 3px; flex: 0 0 72px;
+        color: rgba(255,255,255,.6);
+        font-family: 'Figtree', sans-serif; font-size: 10px; cursor: pointer;
+        transition: color .15s, background .15s;
+        padding: 6px 4px;
+        border: none; background: none;
+      }
+      .bottom-nav-item i { font-size: 20px; }
+      .bottom-nav-item.active, .bottom-nav-item:hover { color: #fff; background: rgba(255,255,255,.1); }
+    }
   </style>
 </head>
 <body>
@@ -332,6 +367,19 @@
       </div>
     </div>
   </div>
+
+  <!-- BOTTOM NAV (mobile) -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="bottom-nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><i class="ph ph-squares-four"></i>Home</button>
+    <button class="bottom-nav-item" data-section="orders" onclick="showSection('orders')"><i class="ph ph-package"></i>Orders</button>
+    <button class="bottom-nav-item" data-section="products" onclick="showSection('products')"><i class="ph ph-flame"></i>Products</button>
+    <button class="bottom-nav-item" data-section="reviews" onclick="showSection('reviews')"><i class="ph ph-star"></i>Reviews</button>
+    <button class="bottom-nav-item" data-section="users" onclick="showSection('users')"><i class="ph ph-users"></i>Users</button>
+    <button class="bottom-nav-item" data-section="categories" onclick="showSection('categories')"><i class="ph ph-folders"></i>Categories</button>
+    <button class="bottom-nav-item" data-section="ticker" onclick="showSection('ticker')"><i class="ph ph-megaphone"></i>Ticker</button>
+    <button class="bottom-nav-item" data-section="coupons" onclick="showSection('coupons')"><i class="ph ph-tag"></i>Coupons</button>
+    <button class="bottom-nav-item" onclick="logout()"><i class="ph ph-sign-out"></i>Sign out</button>
+  </nav>
 </div>
 
 <!-- ADD / EDIT PRODUCT MODAL -->
@@ -615,6 +663,9 @@
     document.getElementById('section-' + name).classList.add('active')
     document.querySelectorAll('.nav-item').forEach(n => {
       if (n.textContent.toLowerCase().includes(name)) n.classList.add('active')
+    })
+    document.querySelectorAll('.bottom-nav-item[data-section]').forEach(n => {
+      n.classList.toggle('active', n.dataset.section === name)
     })
     document.getElementById('section-title').textContent = titles[name]
     if (name === 'dashboard')  loadDashboard()
