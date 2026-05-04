@@ -683,12 +683,19 @@
     const btn = e.target.closest('[data-delete-product]')
     if (!btn) return
     const id = btn.dataset.deleteProduct
-    if (!window.confirm('Remove this product?')) return
+
+    if (btn.dataset.confirming !== 'true') {
+      btn.dataset.confirming = 'true'
+      btn.textContent = 'Sure?'
+      setTimeout(() => { if (btn.dataset.confirming) { btn.dataset.confirming = ''; btn.textContent = 'Remove' } }, 3000)
+      return
+    }
+
+    btn.dataset.confirming = ''
     btn.disabled = true
     btn.textContent = 'Removing…'
     const res = await api('/admin/products/' + id, { method: 'DELETE' })
     if (!res.success) {
-      alert('Failed to remove: ' + (res.error?.message || 'Unknown error'))
       btn.disabled = false
       btn.textContent = 'Remove'
       return
