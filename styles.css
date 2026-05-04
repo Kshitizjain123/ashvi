@@ -1544,4 +1544,62 @@ img.footer-logo-img {
   /* Quote section */
   .quote-mark { font-size: 64px; line-height: 0.8; }
   .quote-text { margin-top: 10px; }
+
+  /* Hide hamburger & floating cart — replaced by bottom nav */
+  .nav-hamburger { display: none; }
+  .floating-cart { display: none !important; }
+
+  /* Extra page padding so content clears bottom nav */
+  .page { padding-bottom: 64px; }
+}
+
+/* ── STORE BOTTOM NAV ── */
+.store-bottom-nav {
+  display: none;
+}
+@media (max-width: 720px) {
+  .store-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: calc(60px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--espresso);
+    z-index: 300;
+    box-shadow: 0 -1px 0 rgba(0,0,0,.08);
+  }
+  .store-bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: rgba(234,224,213,.55);
+    font-size: 10px;
+    font-family: var(--sans);
+    letter-spacing: .04em;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 6px 4px;
+    transition: color .15s;
+    position: relative;
+  }
+  .store-bottom-nav-item i { font-size: 22px; line-height: 1; }
+  .store-bottom-nav-item.active,
+  .store-bottom-nav-item:hover { color: var(--sandstone); }
+  .store-bottom-nav-cart-badge {
+    position: absolute;
+    top: 6px;
+    right: calc(50% - 14px);
+    background: var(--gold);
+    color: var(--espresso);
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 16px; height: 16px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 3px;
+  }
 }
