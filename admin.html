@@ -674,20 +674,27 @@
         <td style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn-sm" onclick="openEditProductModal('${p.id}')">Edit</button>
           <button class="btn-sm" onclick="openImagesModal('${p.id}', '${p.name.replace(/'/g, '&#39;')}')">Images</button>
-          <button class="btn-sm btn-danger" onclick="deleteProduct('${p.id}')">Remove</button>
+          <button class="btn-sm btn-danger" data-delete-product="${p.id}">Remove</button>
         </td>
       </tr>`).join('') || '<tr><td colspan="6" class="loading">No products yet</td></tr>'
   }
 
-  async function deleteProduct(id) {
-    if (!confirm('Remove this product?')) return
+  document.getElementById('products-tbody').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-delete-product]')
+    if (!btn) return
+    const id = btn.dataset.deleteProduct
+    if (!window.confirm('Remove this product?')) return
+    btn.disabled = true
+    btn.textContent = 'Removing…'
     const res = await api('/admin/products/' + id, { method: 'DELETE' })
     if (!res.success) {
-      alert('Failed to remove product: ' + (res.error?.message || 'Unknown error'))
+      alert('Failed to remove: ' + (res.error?.message || 'Unknown error'))
+      btn.disabled = false
+      btn.textContent = 'Remove'
       return
     }
     loadProducts()
-  }
+  })
 
   async function loadUsers() {
     document.getElementById('users-tbody').innerHTML = '<tr><td colspan="6" class="loading">Loading…</td></tr>'
