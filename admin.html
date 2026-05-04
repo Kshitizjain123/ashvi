@@ -154,39 +154,36 @@
     .upload-progress { font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); text-align: center; margin-top: 8px; }
 
     /* ── BOTTOM NAV (mobile only) ── */
-    .bottom-nav { display: none; }
-
-    @media (max-width: 720px) {
-      .sidebar { display: none; }
-      .shell { flex-direction: column; }
-      .main { height: 100vh; padding-bottom: 64px; }
-      .content { padding: 16px; }
-      .topbar { padding: 14px 16px; }
-
-      .bottom-nav {
-        display: flex;
-        position: fixed;
-        bottom: 0; left: 0; right: 0;
-        height: 60px;
-        background: var(--brown);
-        z-index: 200;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      .bottom-nav::-webkit-scrollbar { display: none; }
-      .bottom-nav-item {
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        gap: 3px; flex: 0 0 72px;
-        color: rgba(255,255,255,.6);
-        font-family: 'Figtree', sans-serif; font-size: 10px; cursor: pointer;
-        transition: color .15s, background .15s;
-        padding: 6px 4px;
-        border: none; background: none;
-      }
-      .bottom-nav-item i { font-size: 20px; }
-      .bottom-nav-item.active, .bottom-nav-item:hover { color: #fff; background: rgba(255,255,255,.1); }
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: calc(60px + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+      background: var(--brown);
+      z-index: 1000;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .bottom-nav::-webkit-scrollbar { display: none; }
+    .bottom-nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px; flex: 0 0 72px;
+      color: rgba(255,255,255,.6);
+      font-family: 'Figtree', sans-serif; font-size: 10px; cursor: pointer;
+      transition: color .15s, background .15s;
+      padding: 6px 4px;
+      border: none; background: none;
+    }
+    .bottom-nav-item i { font-size: 20px; }
+    .bottom-nav-item.active, .bottom-nav-item:hover { color: #fff; background: rgba(255,255,255,.1); }
+
+    body.is-mobile .sidebar { display: none; }
+    body.is-mobile .bottom-nav { display: flex; }
+    body.is-mobile .main { padding-bottom: 76px; }
+    body.is-mobile .content { padding: 16px; }
+    body.is-mobile .topbar { padding: 14px 16px; }
   </style>
 </head>
 <body>
@@ -593,6 +590,13 @@
   const API = window.location.hostname === 'localhost'
     ? 'http://localhost:3002/v1'
     : 'https://api-production-377b.up.railway.app/v1'
+
+  function applyMobileClass() {
+    document.body.classList.toggle('is-mobile', window.innerWidth < 900)
+  }
+  applyMobileClass()
+  window.addEventListener('resize', applyMobileClass)
+
   let token = localStorage.getItem('ashvi_admin_token')
   let categories = []
   let loadedProducts = []
