@@ -29,8 +29,44 @@ const adminCmsRoutes = require('./src/routes/admin/cms')
 const adminDashboardRoutes = require('./src/routes/admin/dashboard')
 const adminCategoryRoutes = require('./src/routes/admin/categories')
 const adminUploadRoutes = require('./src/routes/admin/upload')
+const adminTestimonialRoutes = require('./src/routes/admin/testimonials')
+
+const db = require('./src/config/db')
 
 const app = express()
+
+// Run any pending inline migrations on startup
+;(async () => {
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS testimonials (
+        id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        reviewer_name VARCHAR(100) NOT NULL,
+        reviewer_loc  VARCHAR(100),
+        rating        SMALLINT NOT NULL DEFAULT 5 CHECK (rating BETWEEN 1 AND 5),
+        body          TEXT NOT NULL,
+        is_active     BOOLEAN DEFAULT true,
+        sort_order    INTEGER DEFAULT 0,
+        created_at    TIMESTAMPTZ DEFAULT NOW()
+      )
+    `)
+    // Seed default testimonials if table is empty
+    const { rows } = await db.query('SELECT COUNT(*) FROM testimonials')
+    if (parseInt(rows[0].count) === 0) {
+      await db.query(`
+        INSERT INTO testimonials (reviewer_name, reviewer_loc, rating, body, sort_order) VALUES
+          ($1,$2,5,$3,0), ($4,$5,5,$6,1), ($7,$8,5,$9,2)
+      `, [
+        'Aanya R.', 'Jaipur', 'The Rose Bouquet arrived wrapped like a real bouquet. I almost didn\'t want to light it, but when I did, the throw was gentle, never overpowering.',
+        'Vikram S.', 'Bengaluru', 'Ordered the Kulhad pair as a housewarming gift. The terracotta detail is so thoughtful, and the rose petals on top make it feel like a real ritual.',
+        'Meera K.', 'Delhi', 'The Diwali diya candle was the most photographed thing on our table this year. The sculpted rose looks unreal in person.',
+      ])
+    }
+    console.log('Startup migrations OK')
+  } catch (err) {
+    console.error('Startup migration error:', err.message)
+  }
+})()
 
 app.use(helmet())
 app.use(cors({
@@ -79,6 +115,7 @@ app.use('/v1/admin/cms', adminCmsRoutes)
 app.use('/v1/admin/dashboard', adminDashboardRoutes)
 app.use('/v1/admin/categories', adminCategoryRoutes)
 app.use('/v1/admin/upload', adminUploadRoutes)
+app.use('/v1/admin/testimonials', adminTestimonialRoutes)
 
 app.use(errorHandler)
 

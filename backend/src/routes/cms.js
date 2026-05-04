@@ -22,4 +22,14 @@ router.get('/banners/:placement', async (req, res, next) => {
   } catch (err) { next(err) }
 })
 
+// GET /cms/testimonials
+router.get('/testimonials', async (req, res, next) => {
+  try {
+    const { rows } = await db.query(
+      'SELECT reviewer_name, reviewer_loc, rating, body FROM testimonials WHERE is_active = true ORDER BY sort_order ASC, created_at DESC'
+    )
+    res.json({ success: true, testimonials: rows })
+  } catch (err) { next(err) }
+})
+
 module.exports = router

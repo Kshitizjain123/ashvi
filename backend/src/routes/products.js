@@ -131,6 +131,24 @@ router.get('/:slug', async (req, res, next) => {
   } catch (err) { next(err) }
 })
 
+// GET /products/reviews — approved reviews across all products (for homepage)
+router.get('/reviews', async (req, res, next) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 6, 20)
+    const { rows } = await db.query(`
+      SELECT r.rating, r.title, r.body, r.created_at,
+             u.full_name AS user_name, p.name AS product_name
+      FROM reviews r
+      JOIN users u ON r.user_id = u.id
+      JOIN products p ON r.product_id = p.id
+      WHERE r.is_approved = true
+      ORDER BY r.created_at DESC
+      LIMIT $1
+    `, [limit])
+    res.json({ success: true, reviews: rows })
+  } catch (err) { next(err) }
+})
+
 // GET /products/:id/reviews
 router.get('/:id/reviews', async (req, res, next) => {
   try {

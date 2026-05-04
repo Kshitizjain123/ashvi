@@ -15,7 +15,8 @@ cloudinary.config({
 
 const cloudinaryConfigured =
   process.env.CLOUDINARY_CLOUD_NAME &&
-  process.env.CLOUDINARY_CLOUD_NAME !== 'your_cloud_name'
+  process.env.CLOUDINARY_CLOUD_NAME !== 'your_cloud_name' &&
+  process.env.CLOUDINARY_CLOUD_NAME !== 'placeholder'
 
 // Local uploads folder is at project root (one level above backend/)
 const UPLOADS_DIR = path.join(__dirname, '../../../../uploads')
@@ -59,7 +60,8 @@ router.post('/', requireAdmin, upload.single('image'), async (req, res, next) =>
     const filepath = path.join(UPLOADS_DIR, filename)
     fs.writeFileSync(filepath, req.file.buffer)
 
-    const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3002}`
+    const baseUrl = process.env.BASE_URL ||
+      (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : `http://localhost:${process.env.PORT || 3002}`)
     res.json({ success: true, url: `${baseUrl}/uploads/${filename}` })
   } catch (err) {
     next(err)

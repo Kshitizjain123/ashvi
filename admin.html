@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ashvi Admin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,7 +23,7 @@
       --blue: #2d5fa6;
     }
 
-    body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+    body { font-family: 'Figtree', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
 
     /* ── LOGIN ── */
     #login-screen {
@@ -31,52 +34,56 @@
       background: #fff; border: 1px solid var(--border); border-radius: 12px;
       padding: 48px 40px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(79,62,53,.08);
     }
+    .login-card { text-align: center; }
+    .login-card .field { text-align: left; }
     .login-card h1 { font-size: 24px; color: var(--brown); margin-bottom: 6px; }
-    .login-card p  { color: var(--muted); font-size: 14px; margin-bottom: 32px; font-family: sans-serif; }
+    .login-card p  { color: var(--muted); font-size: 14px; margin-bottom: 32px; font-family: 'Figtree', sans-serif; }
     .field { margin-bottom: 18px; }
-    .field label { display: block; font-size: 12px; font-family: sans-serif; text-transform: uppercase;
+    .field label { display: block; font-size: 12px; font-family: 'Figtree', sans-serif; text-transform: uppercase;
                    letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
     .field input  { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
-                    font-size: 15px; font-family: sans-serif; outline: none; background: var(--cream); }
+                    font-size: 15px; font-family: 'Figtree', sans-serif; outline: none; background: var(--cream); }
     .field input:focus { border-color: var(--brown); }
     .btn-primary { width: 100%; padding: 12px; background: var(--brown); color: #fff; border: none;
-                   border-radius: 8px; font-size: 15px; font-family: sans-serif; cursor: pointer; }
+                   border-radius: 8px; font-size: 15px; font-family: 'Figtree', sans-serif; cursor: pointer; }
     .btn-primary:hover { background: var(--brown-light); }
-    .error-msg { color: var(--red); font-size: 13px; font-family: sans-serif; margin-top: 12px; }
+    .error-msg { color: var(--red); font-size: 13px; font-family: 'Figtree', sans-serif; margin-top: 12px; }
 
     /* ── SHELL ── */
     #app { display: none; }
-    .shell { display: flex; min-height: 100vh; }
+    .shell { display: flex; height: 100vh; overflow: hidden; }
 
     /* sidebar */
     .sidebar {
       width: 220px; background: var(--brown); color: #fff; flex-shrink: 0;
       display: flex; flex-direction: column; padding: 0;
+      position: sticky; top: 0; height: 100vh; overflow: hidden;
     }
     .sidebar-logo { padding: 24px 20px 20px; font-size: 20px; border-bottom: 1px solid rgba(255,255,255,.12); }
-    .sidebar-logo span { font-size: 11px; display: block; opacity: .6; font-family: sans-serif; margin-top: 2px; }
+    .sidebar-logo span { font-size: 11px; display: block; opacity: .6; font-family: 'Figtree', sans-serif; margin-top: 2px; }
     .sidebar nav { padding: 16px 0; flex: 1; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px;
-                font-family: sans-serif; font-size: 14px; cursor: pointer; opacity: .75;
+                font-family: 'Figtree', sans-serif; font-size: 14px; cursor: pointer; opacity: .75;
                 transition: opacity .15s, background .15s; }
     .nav-item:hover, .nav-item.active { opacity: 1; background: rgba(255,255,255,.1); }
+    .nav-item i { font-size: 17px; flex-shrink: 0; }
     .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.12); }
     .sidebar-footer button { background: none; border: none; color: rgba(255,255,255,.6);
-                             font-family: sans-serif; font-size: 13px; cursor: pointer; }
+                             font-family: 'Figtree', sans-serif; font-size: 13px; cursor: pointer; }
     .sidebar-footer button:hover { color: #fff; }
 
     /* main */
-    .main { flex: 1; overflow-y: auto; background: var(--cream); }
+    .main { flex: 1; overflow-y: auto; background: var(--cream); height: 100vh; }
     .topbar { padding: 20px 32px; border-bottom: 1px solid var(--border); background: #fff;
               display: flex; align-items: center; justify-content: space-between; }
     .topbar h2 { font-size: 20px; color: var(--brown); }
-    .topbar small { font-family: sans-serif; font-size: 13px; color: var(--muted); }
+    .topbar small { font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); }
     .content { padding: 32px; }
 
     /* cards */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px; }
     .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
-    .stat-card .label { font-family: sans-serif; font-size: 12px; text-transform: uppercase;
+    .stat-card .label { font-family: 'Figtree', sans-serif; font-size: 12px; text-transform: uppercase;
                         letter-spacing: .06em; color: var(--muted); margin-bottom: 8px; }
     .stat-card .value { font-size: 28px; color: var(--brown); }
 
@@ -84,7 +91,7 @@
     .card { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
     .card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .card-header h3 { font-size: 15px; color: var(--brown); }
-    table { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; font-family: 'Figtree', sans-serif; font-size: 14px; }
     th { text-align: left; padding: 10px 20px; background: var(--cream); font-size: 11px;
          text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1px solid var(--border); }
     td { padding: 12px 20px; border-bottom: 1px solid var(--border); color: var(--text); }
@@ -92,7 +99,7 @@
     tr:hover td { background: var(--cream); }
 
     .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px;
-             font-family: sans-serif; text-transform: uppercase; letter-spacing: .04em; }
+             font-family: 'Figtree', sans-serif; text-transform: uppercase; letter-spacing: .04em; }
     .badge-pending   { background: #fff3cd; color: #856404; }
     .badge-confirmed { background: #cfe2ff; color: #0a58ca; }
     .badge-shipped   { background: #d1ecf1; color: #0c5460; }
@@ -101,7 +108,7 @@
     .badge-processing { background: #e2d9f3; color: #4a235a; }
     .badge-returned  { background: #f8d7da; color: #721c24; }
 
-    .loading { text-align: center; padding: 48px; color: var(--muted); font-family: sans-serif; }
+    .loading { text-align: center; padding: 48px; color: var(--muted); font-family: 'Figtree', sans-serif; }
     .section { display: none; }
     .section.active { display: block; }
 
@@ -109,12 +116,12 @@
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-grid .full { grid-column: 1 / -1; }
     .field textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
-                      font-size: 14px; font-family: sans-serif; outline: none; background: var(--cream);
+                      font-size: 14px; font-family: 'Figtree', sans-serif; outline: none; background: var(--cream);
                       resize: vertical; min-height: 80px; }
     .field textarea:focus { border-color: var(--brown); }
     .field select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
-                    font-size: 14px; font-family: sans-serif; outline: none; background: var(--cream); }
-    .btn-sm { padding: 6px 14px; font-size: 13px; font-family: sans-serif; border-radius: 6px;
+                    font-size: 14px; font-family: 'Figtree', sans-serif; outline: none; background: var(--cream); }
+    .btn-sm { padding: 6px 14px; font-size: 13px; font-family: 'Figtree', sans-serif; border-radius: 6px;
               border: 1px solid var(--border); cursor: pointer; background: #fff; }
     .btn-sm:hover { background: var(--cream-dark); }
     .btn-danger { background: var(--red); color: #fff; border-color: var(--red); }
@@ -135,16 +142,16 @@
     .img-card.main { border-color: var(--brown); }
     .img-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
     .img-card-badge { position: absolute; top: 6px; left: 6px; background: var(--brown); color: #fff;
-                      font-size: 10px; font-family: sans-serif; padding: 2px 7px; border-radius: 10px; }
+                      font-size: 10px; font-family: 'Figtree', sans-serif; padding: 2px 7px; border-radius: 10px; }
     .img-card-actions { display: flex; gap: 4px; padding: 6px; background: #fff; }
     .img-card-actions button { flex: 1; font-size: 11px; padding: 4px 0; }
     .upload-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 28px;
                    text-align: center; cursor: pointer; transition: border-color .15s; }
     .upload-zone:hover, .upload-zone.drag { border-color: var(--brown); background: var(--cream-dark); }
     .upload-zone input { display: none; }
-    .upload-zone p { font-family: sans-serif; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+    .upload-zone p { font-family: 'Figtree', sans-serif; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
     .upload-zone .preview { max-width: 160px; max-height: 160px; border-radius: 6px; margin: 0 auto 8px; display: block; }
-    .upload-progress { font-family: sans-serif; font-size: 13px; color: var(--muted); text-align: center; margin-top: 8px; }
+    .upload-progress { font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); text-align: center; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -152,8 +159,7 @@
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
-    <h1>Ashvi Admin</h1>
-    <p>Sign in to manage your store</p>
+    <img src="assets/logo-ashvi.png" alt="Ashvi" style="height:84px;width:auto;margin:0 auto 32px;display:block;" />
     <div class="field">
       <label>Email</label>
       <input type="email" id="email" value="admin@ashvi.in" />
@@ -172,19 +178,20 @@
   <div class="shell">
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="assets/logo-ashvi.png" alt="Ashvi" style="height:52px;width:auto;display:block;filter:brightness(0) invert(1);" />
+        <img src="assets/logo-ashvi.png" alt="Ashvi" style="height:72px;width:auto;display:block;filter:brightness(0) invert(1);" />
       </div>
       <nav>
-        <div class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
-        <div class="nav-item" onclick="showSection('orders')">📦 Orders</div>
-        <div class="nav-item" onclick="showSection('products')">🕯 Products</div>
-        <div class="nav-item" onclick="showSection('users')">👤 Users</div>
-        <div class="nav-item" onclick="showSection('reviews')">⭐ Reviews</div>
-        <div class="nav-item" onclick="showSection('coupons')">🏷 Coupons</div>
-        <div class="nav-item" onclick="showSection('categories')">📂 Categories</div>
+        <div class="nav-item active" onclick="showSection('dashboard')"><i class="ph ph-squares-four"></i> Dashboard</div>
+        <div class="nav-item" onclick="showSection('orders')"><i class="ph ph-package"></i> Orders</div>
+        <div class="nav-item" onclick="showSection('products')"><i class="ph ph-flame"></i> Products</div>
+        <div class="nav-item" onclick="showSection('users')"><i class="ph ph-users"></i> Users</div>
+        <div class="nav-item" onclick="showSection('reviews')"><i class="ph ph-star"></i> Reviews</div>
+        <div class="nav-item" onclick="showSection('coupons')"><i class="ph ph-tag"></i> Coupons</div>
+        <div class="nav-item" onclick="showSection('categories')"><i class="ph ph-folders"></i> Categories</div>
+        <div class="nav-item" onclick="showSection('ticker')"><i class="ph ph-megaphone"></i> Ticker</div>
       </nav>
       <div class="sidebar-footer">
-        <button onclick="logout()">Sign out</button>
+        <button onclick="logout()" style="display:flex;align-items:center;gap:8px"><i class="ph ph-sign-out" style="font-size:17px"></i> Sign out</button>
       </div>
     </aside>
 
@@ -254,9 +261,19 @@
 
         <!-- REVIEWS -->
         <div class="section" id="section-reviews">
+          <div class="card" style="margin-bottom:24px">
+            <div class="card-header">
+              <h3>Homepage Testimonials</h3>
+              <button class="btn-sm btn-success" onclick="openTestimonialModal()">+ Add Testimonial</button>
+            </div>
+            <table><thead><tr>
+              <th>Name</th><th>Location</th><th>Rating</th><th>Review</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="testimonials-tbody"></tbody></table>
+          </div>
           <div class="card">
             <div class="card-header">
-              <h3>Reviews</h3>
+              <h3>Customer Reviews</h3>
               <select onchange="loadReviews(this.value)" style="font-family:sans-serif;font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;">
                 <option value="">All</option>
                 <option value="false">Pending</option>
@@ -281,6 +298,20 @@
               <th>Name</th><th>Slug</th><th>Description</th><th>Sort</th><th>Status</th><th>Actions</th>
             </tr></thead>
             <tbody id="categories-tbody"></tbody></table>
+          </div>
+        </div>
+
+        <!-- TICKER -->
+        <div class="section" id="section-ticker">
+          <div class="card">
+            <div class="card-header">
+              <h3>Ticker Messages</h3>
+              <button class="btn-sm btn-success" onclick="openTickerModal()">+ Add Message</button>
+            </div>
+            <table><thead><tr>
+              <th>Message</th><th>Sort</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="ticker-tbody"></tbody></table>
           </div>
         </div>
 
@@ -329,7 +360,22 @@
       <div class="field"><label>Notes — Top</label><input type="text" id="p-notes-top" placeholder="e.g. Damask rose" /></div>
       <div class="field"><label>Notes — Heart</label><input type="text" id="p-notes-heart" placeholder="e.g. Geranium, Pink pepper" /></div>
       <div class="field full"><label>Notes — Base</label><input type="text" id="p-notes-base" placeholder="e.g. Cedar, Musk" /></div>
-      <div class="field"><label>Image URL</label><input type="text" id="p-img" /></div>
+      <div class="field full">
+        <label>Product Image</label>
+        <div id="p-img-drop" style="border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .15s;background:var(--cream)"
+             onclick="document.getElementById('p-img-file').click()"
+             ondragover="event.preventDefault();this.style.borderColor='var(--brown)'"
+             ondragleave="this.style.borderColor='var(--border)'"
+             ondrop="pImgHandleDrop(event)">
+          <input type="file" id="p-img-file" accept="image/*" style="display:none" onchange="pImgPreview(this)" />
+          <img id="p-img-preview" style="max-height:100px;max-width:180px;display:none;border-radius:6px;margin:0 auto 8px;display:none;object-fit:cover" />
+          <div id="p-img-hint" style="font-family:sans-serif;font-size:13px;color:var(--muted)">Click or drag an image here</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px" onclick="event.stopPropagation()">
+          <span style="font-family:sans-serif;font-size:12px;color:var(--muted);white-space:nowrap">or URL:</span>
+          <input type="text" id="p-img" placeholder="https://..." style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:sans-serif;background:var(--cream);outline:none" oninput="if(this.value){document.getElementById('p-img-preview').style.display='none';document.getElementById('p-img-hint').style.display='';document.getElementById('p-img-file').value=''}" />
+        </div>
+      </div>
       <div class="field"><label>Img Background</label><input type="text" id="p-imgbg" placeholder="#fdf8f2" /></div>
       <div class="field"><label>Stock</label><input type="number" id="p-stock" placeholder="0" min="0" /></div>
       <div class="field" id="p-active-field" style="display:none"><label>Status</label>
@@ -339,9 +385,69 @@
         </select>
       </div>
     </div>
+
+    <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <label style="font-size:12px;font-family:sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Ingredients (What's in it)</label>
+        <button class="btn-sm" type="button" onclick="addIngredientRow()">+ Add</button>
+      </div>
+      <div id="p-ingredients-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeProductModal()">Cancel</button>
       <button class="btn-sm btn-success" id="product-modal-save-btn" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD / EDIT TESTIMONIAL MODAL -->
+<div class="modal-overlay" id="testimonial-modal">
+  <div class="modal" style="width:500px">
+    <h3 id="testimonial-modal-title">Add Testimonial</h3>
+    <div class="form-grid">
+      <div class="field"><label>Reviewer Name</label><input type="text" id="t-name" placeholder="e.g. Aanya R." /></div>
+      <div class="field"><label>Location</label><input type="text" id="t-loc" placeholder="e.g. Jaipur" /></div>
+      <div class="field full"><label>Review Text</label><textarea id="t-body" style="min-height:90px" placeholder="What they said…"></textarea></div>
+      <div class="field"><label>Rating</label>
+        <select id="t-rating">
+          <option value="5">★★★★★ (5)</option>
+          <option value="4">★★★★☆ (4)</option>
+          <option value="3">★★★☆☆ (3)</option>
+        </select>
+      </div>
+      <div class="field"><label>Sort Order</label><input type="number" id="t-sort" value="0" min="0" /></div>
+      <div class="field full" id="t-active-field" style="display:none"><label>Status</label>
+        <select id="t-active">
+          <option value="true">Active (shown on site)</option>
+          <option value="false">Hidden</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeTestimonialModal()">Cancel</button>
+      <button class="btn-sm btn-success" id="testimonial-modal-save-btn" onclick="saveTestimonial()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD / EDIT TICKER MODAL -->
+<div class="modal-overlay" id="ticker-modal">
+  <div class="modal" style="width:460px">
+    <h3 id="ticker-modal-title">Add Ticker Message</h3>
+    <div class="form-grid">
+      <div class="field full"><label>Message</label><input type="text" id="tk-message" placeholder="e.g. Free shipping on orders above ₹1,499" /></div>
+      <div class="field"><label>Sort Order</label><input type="number" id="tk-sort" value="0" min="0" /></div>
+      <div class="field" id="tk-active-field" style="display:none"><label>Status</label>
+        <select id="tk-active">
+          <option value="true">Active</option>
+          <option value="false">Hidden</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeTickerModal()">Cancel</button>
+      <button class="btn-sm btn-success" id="ticker-modal-save-btn" onclick="saveTicker()">Save</button>
     </div>
   </div>
 </div>
@@ -479,7 +585,7 @@
     location.reload()
   }
 
-  const titles = { dashboard: 'Dashboard', orders: 'Orders', products: 'Products', users: 'Users', reviews: 'Reviews', coupons: 'Coupons', categories: 'Categories' }
+  const titles = { dashboard: 'Dashboard', orders: 'Orders', products: 'Products', users: 'Users', reviews: 'Reviews', coupons: 'Coupons', categories: 'Categories', ticker: 'Ticker' }
 
   function showSection(name) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
@@ -493,9 +599,10 @@
     if (name === 'orders')     loadOrders()
     if (name === 'products')   loadProducts()
     if (name === 'users')      loadUsers()
-    if (name === 'reviews')    loadReviews()
+    if (name === 'reviews')    { loadTestimonials(); loadReviews() }
     if (name === 'coupons')    loadCoupons()
     if (name === 'categories') loadCategories()
+    if (name === 'ticker')     loadTicker()
   }
 
   async function loadDashboard() {
@@ -610,6 +717,92 @@
       </tr>`).join('') || '<tr><td colspan="6" class="loading">No reviews yet</td></tr>'
   }
 
+  // ── TESTIMONIALS ───────────────────────────────────────────────
+  let loadedTestimonials = []
+  let editingTestimonialId = null
+
+  async function loadTestimonials() {
+    document.getElementById('testimonials-tbody').innerHTML = '<tr><td colspan="6" class="loading">Loading…</td></tr>'
+    const data = await api('/admin/testimonials')
+    if (!data.success) { document.getElementById('testimonials-tbody').innerHTML = `<tr><td colspan="6" class="loading" style="color:#c0392b">${data.error?.message || 'Failed to load'}</td></tr>`; return }
+    loadedTestimonials = data.testimonials
+    document.getElementById('testimonials-tbody').innerHTML = data.testimonials.map(t => `
+      <tr>
+        <td><strong>${t.reviewer_name}</strong></td>
+        <td style="font-family:sans-serif;font-size:13px">${t.reviewer_loc || '—'}</td>
+        <td style="font-family:sans-serif">★ ${t.rating}</td>
+        <td style="font-family:sans-serif;font-size:13px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.body}</td>
+        <td><span class="badge ${t.is_active ? 'badge-delivered' : 'badge-cancelled'}">${t.is_active ? 'Active' : 'Hidden'}</span></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn-sm" onclick="openEditTestimonialModal('${t.id}')">Edit</button>
+          <button class="btn-sm btn-danger" onclick="deleteTestimonial('${t.id}')">Delete</button>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="6" class="loading">No testimonials yet</td></tr>'
+  }
+
+  function openTestimonialModal() {
+    editingTestimonialId = null
+    document.getElementById('testimonial-modal-title').textContent = 'Add Testimonial'
+    document.getElementById('testimonial-modal-save-btn').textContent = 'Save'
+    document.getElementById('t-active-field').style.display = 'none'
+    document.getElementById('t-name').value = ''
+    document.getElementById('t-loc').value = ''
+    document.getElementById('t-body').value = ''
+    document.getElementById('t-rating').value = '5'
+    document.getElementById('t-sort').value = '0'
+    document.getElementById('testimonial-modal').classList.add('open')
+  }
+
+  function openEditTestimonialModal(id) {
+    const t = loadedTestimonials.find(x => x.id === id)
+    if (!t) return
+    editingTestimonialId = id
+    document.getElementById('testimonial-modal-title').textContent = 'Edit Testimonial'
+    document.getElementById('testimonial-modal-save-btn').textContent = 'Update'
+    document.getElementById('t-active-field').style.display = ''
+    document.getElementById('t-name').value = t.reviewer_name || ''
+    document.getElementById('t-loc').value = t.reviewer_loc || ''
+    document.getElementById('t-body').value = t.body || ''
+    document.getElementById('t-rating').value = String(t.rating || 5)
+    document.getElementById('t-sort').value = t.sort_order ?? 0
+    document.getElementById('t-active').value = String(t.is_active)
+    document.getElementById('testimonial-modal').classList.add('open')
+  }
+
+  function closeTestimonialModal() {
+    editingTestimonialId = null
+    document.getElementById('testimonial-modal').classList.remove('open')
+  }
+
+  async function saveTestimonial() {
+    const body = {
+      reviewer_name: document.getElementById('t-name').value.trim(),
+      reviewer_loc:  document.getElementById('t-loc').value.trim() || null,
+      rating:        parseInt(document.getElementById('t-rating').value),
+      body:          document.getElementById('t-body').value.trim(),
+      sort_order:    parseInt(document.getElementById('t-sort').value) || 0,
+    }
+    if (!body.reviewer_name || !body.body) { alert('Name and review text are required'); return }
+    if (editingTestimonialId) {
+      body.is_active = document.getElementById('t-active').value === 'true'
+      const data = await api('/admin/testimonials/' + editingTestimonialId, { method: 'PATCH', body: JSON.stringify(body) })
+      if (!data.success) { alert(data.error?.message || 'Failed to update'); return }
+    } else {
+      const data = await api('/admin/testimonials', { method: 'POST', body: JSON.stringify(body) })
+      if (!data.success) { alert(data.error?.message || 'Failed to save'); return }
+    }
+    closeTestimonialModal()
+    loadTestimonials()
+  }
+
+  async function deleteTestimonial(id) {
+    if (!confirm('Delete this testimonial?')) return
+    const data = await api('/admin/testimonials/' + id, { method: 'DELETE' })
+    if (data.success) loadTestimonials()
+    else alert(data.error?.message || 'Failed to delete')
+  }
+  // ───────────────────────────────────────────────────────────────
+
   async function approveReview(id) {
     await api('/admin/reviews/' + id + '/approve', { method: 'PATCH' })
     loadReviews()
@@ -635,18 +828,83 @@
       </tr>`).join('') || '<tr><td colspan="7" class="loading">No coupons yet</td></tr>'
   }
 
+  function addIngredientRow(name = '', desc = '') {
+    const list = document.getElementById('p-ingredients-list')
+    const row = document.createElement('div')
+    row.style.cssText = 'display:flex;gap:8px;align-items:center'
+    row.innerHTML = `
+      <input type="text" placeholder="Ingredient name" value="${name.replace(/"/g,'&quot;')}"
+        style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:sans-serif;background:var(--cream);outline:none" class="ing-name" />
+      <input type="text" placeholder="Short description" value="${desc.replace(/"/g,'&quot;')}"
+        style="flex:2;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:sans-serif;background:var(--cream);outline:none" class="ing-desc" />
+      <button type="button" class="btn-sm btn-danger" style="flex-shrink:0" onclick="this.parentElement.remove()">✕</button>
+    `
+    list.appendChild(row)
+  }
+
+  function getIngredients() {
+    return Array.from(document.querySelectorAll('#p-ingredients-list > div')).map((row, i) => ({
+      name: row.querySelector('.ing-name').value.trim(),
+      description: row.querySelector('.ing-desc').value.trim(),
+      sort_order: i,
+    })).filter(r => r.name)
+  }
+
+  function clearIngredients() {
+    document.getElementById('p-ingredients-list').innerHTML = ''
+  }
+
+  function pImgPreview(input) {
+    const file = input.files[0]
+    if (!file) return
+    document.getElementById('p-img').value = ''
+    const reader = new FileReader()
+    reader.onload = e => {
+      const img = document.getElementById('p-img-preview')
+      img.src = e.target.result
+      img.style.display = 'block'
+      document.getElementById('p-img-hint').style.display = 'none'
+      document.getElementById('p-img-drop').style.borderColor = 'var(--brown)'
+    }
+    reader.readAsDataURL(file)
+  }
+
+  function pImgHandleDrop(e) {
+    e.preventDefault()
+    document.getElementById('p-img-drop').style.borderColor = 'var(--border)'
+    const file = e.dataTransfer.files[0]
+    if (!file || !file.type.startsWith('image/')) return
+    const dt = new DataTransfer()
+    dt.items.add(file)
+    const input = document.getElementById('p-img-file')
+    input.files = dt.files
+    pImgPreview(input)
+  }
+
+  function resetProductImageField() {
+    document.getElementById('p-img-file').value = ''
+    document.getElementById('p-img').value = ''
+    const img = document.getElementById('p-img-preview')
+    img.src = ''
+    img.style.display = 'none'
+    document.getElementById('p-img-hint').style.display = ''
+    document.getElementById('p-img-drop').style.borderColor = 'var(--border)'
+  }
+
   function openProductModal() {
     editingProductId = null
     document.getElementById('product-modal-title').textContent = 'Add Product'
     document.getElementById('product-modal-save-btn').textContent = 'Save Product'
     document.getElementById('p-active-field').style.display = 'none'
     ;['p-name','p-tagline','p-desc','p-price','p-mrp','p-volume','p-burn','p-vessel',
-      'p-notes-top','p-notes-heart','p-notes-base','p-img','p-imgbg','p-stock'].forEach(id => {
+      'p-notes-top','p-notes-heart','p-notes-base','p-imgbg','p-stock'].forEach(id => {
       const el = document.getElementById(id)
       if (el) el.value = ''
     })
     document.getElementById('p-badge').value = ''
     document.getElementById('p-category').value = ''
+    clearIngredients()
+    resetProductImageField()
     document.getElementById('product-modal').classList.add('open')
   }
 
@@ -669,12 +927,21 @@
     document.getElementById('p-notes-top').value    = p.notes_top || ''
     document.getElementById('p-notes-heart').value  = p.notes_heart || ''
     document.getElementById('p-notes-base').value   = p.notes_base || ''
-    document.getElementById('p-img').value          = p.img_src || ''
     document.getElementById('p-imgbg').value        = p.img_bg || ''
     document.getElementById('p-stock').value        = p.stock ?? ''
     document.getElementById('p-badge').value        = p.badge || ''
     document.getElementById('p-category').value     = p.category_id || ''
     document.getElementById('p-active').value       = String(p.is_active)
+    clearIngredients()
+    resetProductImageField()
+    if (p.img_src) document.getElementById('p-img').value = p.img_src
+    // Load existing ingredients from detail endpoint
+    api('/products/' + p.slug).then(data => {
+      if (data.success && data.product && data.product.ingredients) {
+        clearIngredients()
+        data.product.ingredients.forEach(i => addIngredientRow(i.name, i.description || i.desc || ''))
+      }
+    }).catch(() => {})
     document.getElementById('product-modal').classList.add('open')
   }
 
@@ -686,7 +953,38 @@
   function closeCouponModal() { document.getElementById('coupon-modal').classList.remove('open') }
 
   async function saveProduct() {
-    const imgUrl = document.getElementById('p-img').value
+    const saveBtn = document.getElementById('product-modal-save-btn')
+    const fileInput = document.getElementById('p-img-file')
+    let imgUrl = document.getElementById('p-img').value.trim()
+
+    // Upload file first if one was picked
+    if (fileInput.files[0]) {
+      saveBtn.disabled = true
+      saveBtn.textContent = 'Uploading…'
+      const formData = new FormData()
+      formData.append('image', fileInput.files[0])
+      try {
+        const res = await fetch(API + '/admin/upload', {
+          method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: formData,
+        })
+        const uploadData = await res.json()
+        if (!uploadData.success) {
+          alert(uploadData.error?.message || 'Image upload failed')
+          saveBtn.disabled = false
+          saveBtn.textContent = editingProductId ? 'Update Product' : 'Save Product'
+          return
+        }
+        imgUrl = uploadData.url
+      } catch (err) {
+        alert('Network error during image upload')
+        saveBtn.disabled = false
+        saveBtn.textContent = editingProductId ? 'Update Product' : 'Save Product'
+        return
+      }
+      saveBtn.disabled = false
+      saveBtn.textContent = editingProductId ? 'Update Product' : 'Save Product'
+    }
+
     const stockVal = document.getElementById('p-stock').value
     const body = {
       name:        document.getElementById('p-name').value,
@@ -705,8 +1003,9 @@
       img_bg:      document.getElementById('p-imgbg').value || '#fdf8f2',
     }
 
+    const ingredients = getIngredients()
+
     if (editingProductId) {
-      // EDIT mode
       body.is_active = document.getElementById('p-active').value === 'true'
       const data = await api('/admin/products/' + editingProductId, { method: 'PATCH', body: JSON.stringify(body) })
       if (!data.success) { alert(data.error?.message || 'Failed to update product'); return }
@@ -721,11 +1020,13 @@
           method: 'PATCH', body: JSON.stringify({ quantity: parseInt(stockVal) })
         }))
       }
+      saves.push(api('/admin/products/' + editingProductId + '/ingredients', {
+        method: 'PATCH', body: JSON.stringify({ ingredients })
+      }))
       await Promise.all(saves)
       closeProductModal()
       loadProducts()
     } else {
-      // ADD mode
       const data = await api('/admin/products', { method: 'POST', body: JSON.stringify(body) })
       if (!data.success) { alert(data.error?.message || 'Failed to save product'); return }
       const saves = []
@@ -737,6 +1038,11 @@
       if (stockVal !== '') {
         saves.push(api('/admin/products/inventory/' + data.id, {
           method: 'PATCH', body: JSON.stringify({ quantity: parseInt(stockVal) })
+        }))
+      }
+      if (ingredients.length) {
+        saves.push(api('/admin/products/' + data.id + '/ingredients', {
+          method: 'PATCH', body: JSON.stringify({ ingredients })
         }))
       }
       await Promise.all(saves)
@@ -980,6 +1286,79 @@
     } else {
       progress.textContent = data.error?.message || 'Failed to add image'
     }
+  }
+  // ───────────────────────────────────────────────────────────────
+
+  // ── TICKER ─────────────────────────────────────────────────────
+  let loadedTicker = []
+  let editingTickerId = null
+
+  async function loadTicker() {
+    document.getElementById('ticker-tbody').innerHTML = '<tr><td colspan="4" class="loading">Loading…</td></tr>'
+    const data = await api('/admin/cms/ticker')
+    if (!data.success) { document.getElementById('ticker-tbody').innerHTML = `<tr><td colspan="4" class="loading" style="color:#c0392b">${data.error?.message || 'Failed to load'}</td></tr>`; return }
+    loadedTicker = data.messages
+    document.getElementById('ticker-tbody').innerHTML = data.messages.map(m => `
+      <tr>
+        <td style="font-family:sans-serif;font-size:14px">${m.message}</td>
+        <td style="font-family:sans-serif;text-align:center">${m.sort_order}</td>
+        <td><span class="badge ${m.is_active ? 'badge-delivered' : 'badge-cancelled'}">${m.is_active ? 'Active' : 'Hidden'}</span></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn-sm" onclick="openEditTickerModal('${m.id}')">Edit</button>
+          <button class="btn-sm btn-danger" onclick="deleteTicker('${m.id}')">Delete</button>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="4" class="loading">No messages yet</td></tr>'
+  }
+
+  function openTickerModal() {
+    editingTickerId = null
+    document.getElementById('ticker-modal-title').textContent = 'Add Ticker Message'
+    document.getElementById('ticker-modal-save-btn').textContent = 'Save'
+    document.getElementById('tk-active-field').style.display = 'none'
+    document.getElementById('tk-message').value = ''
+    document.getElementById('tk-sort').value = '0'
+    document.getElementById('ticker-modal').classList.add('open')
+  }
+
+  function openEditTickerModal(id) {
+    const m = loadedTicker.find(x => x.id === id)
+    if (!m) return
+    editingTickerId = id
+    document.getElementById('ticker-modal-title').textContent = 'Edit Ticker Message'
+    document.getElementById('ticker-modal-save-btn').textContent = 'Update'
+    document.getElementById('tk-active-field').style.display = ''
+    document.getElementById('tk-message').value = m.message || ''
+    document.getElementById('tk-sort').value = m.sort_order ?? 0
+    document.getElementById('tk-active').value = String(m.is_active)
+    document.getElementById('ticker-modal').classList.add('open')
+  }
+
+  function closeTickerModal() {
+    editingTickerId = null
+    document.getElementById('ticker-modal').classList.remove('open')
+  }
+
+  async function saveTicker() {
+    const message = document.getElementById('tk-message').value.trim()
+    if (!message) { alert('Message is required'); return }
+    const body = { message, sort_order: parseInt(document.getElementById('tk-sort').value) || 0 }
+    if (editingTickerId) {
+      body.is_active = document.getElementById('tk-active').value === 'true'
+      const data = await api('/admin/cms/ticker/' + editingTickerId, { method: 'PATCH', body: JSON.stringify(body) })
+      if (!data.success) { alert(data.error?.message || 'Failed to update'); return }
+    } else {
+      const data = await api('/admin/cms/ticker', { method: 'POST', body: JSON.stringify(body) })
+      if (!data.success) { alert(data.error?.message || 'Failed to save'); return }
+    }
+    closeTickerModal()
+    loadTicker()
+  }
+
+  async function deleteTicker(id) {
+    if (!confirm('Delete this ticker message?')) return
+    const data = await api('/admin/cms/ticker/' + id, { method: 'DELETE' })
+    if (data.success) loadTicker()
+    else alert(data.error?.message || 'Failed to delete')
   }
   // ───────────────────────────────────────────────────────────────
 

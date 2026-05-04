@@ -15,6 +15,7 @@ router.get('/', async (req, res, next) => {
     let params = []
     let i = 1
 
+    conditions.push(`p.is_active = true`)
     if (search) { conditions.push(`p.name ILIKE $${i++}`); params.push(`%${search}%`) }
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''

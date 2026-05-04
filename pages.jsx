@@ -182,7 +182,7 @@ const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
           <div className="review-grid">
             {reviews.map((r, i) =>
             <div key={i} className="review-card">
-                <div className="review-stars">★★★★★</div>
+                <div className="review-stars">{'★'.repeat(r.rating || 5)}{'☆'.repeat(5 - (r.rating || 5))}</div>
                 <p className="review-text">"{r.text}"</p>
                 <div className="review-meta">
                   <div className="review-avatar">{r.initial}</div>
@@ -244,27 +244,19 @@ const CategoryPage = ({ categoryId, navigate, addToCart, products, categories })
   return (
     <div className="page">
       <section className="category-hero">
-        <div className="breadcrumb">
-          <a onClick={() => navigate({ page: 'home' })} style={{ cursor: 'pointer' }}>Home</a> <span style={{ margin: '0 12px', color: 'var(--gold)' }}>/</span> {cat.name}
+        <div className="container">
+          <div className="breadcrumb">
+            <a onClick={() => navigate({ page: 'home' })} style={{ cursor: 'pointer' }}>Home</a> <span style={{ margin: '0 12px', color: 'var(--gold)' }}>/</span> {cat.name}
+          </div>
+          <h1>{cat.name}</h1>
+          <p>{cat.long}</p>
         </div>
-        <h1>{cat.name}</h1>
-        <p>{cat.long}</p>
       </section>
       <div className="cat-layout">
         <aside className="filter-panel">
           <h6 style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 24, paddingBottom: 12, borderBottom: '1px solid var(--espresso)' }}>
             <Icon name="sliders" size={14} /> &nbsp; Filters
           </h6>
-          <div className="filter-group">
-            <h6>Price</h6>
-            {priceFilters.map((f) =>
-            <div key={f.id} className={'filter-option' + (filters.price.includes(f.id) ? ' checked' : '')} onClick={() => toggle('price', f.id)}>
-                <span className="filter-checkbox">{filters.price.includes(f.id) && <Icon name="arrowSm" size={10} />}</span>
-                <span>{f.label}</span>
-                <span className="filter-count">{all.filter(f.test).length}</span>
-              </div>
-            )}
-          </div>
           <div className="filter-group">
             <h6>Collection</h6>
             {tagFilters.map((f) => {
@@ -276,8 +268,17 @@ const CategoryPage = ({ categoryId, navigate, addToCart, products, categories })
                   <span>{f.label}</span>
                   <span className="filter-count">{cnt}</span>
                 </div>);
-
             })}
+          </div>
+          <div className="filter-group">
+            <h6>Price</h6>
+            {priceFilters.map((f) =>
+            <div key={f.id} className={'filter-option' + (filters.price.includes(f.id) ? ' checked' : '')} onClick={() => toggle('price', f.id)}>
+                <span className="filter-checkbox">{filters.price.includes(f.id) && <Icon name="arrowSm" size={10} />}</span>
+                <span>{f.label}</span>
+                <span className="filter-count">{all.filter(f.test).length}</span>
+              </div>
+            )}
           </div>
           {(filters.price.length > 0 || filters.tag.length > 0) &&
           <button className="link-underline" onClick={() => setFilters({ price: [], tag: [] })}>Clear all</button>
@@ -356,9 +357,7 @@ const ProductPage = ({ productId, navigate, addToCart, products }) => {
             )}
           </div>
           <div className="pdp-main">
-            {p.image ?
-            <img src={p.image} alt={p.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} /> :
-            <Placeholder tone={p.tone} label={p.name} />}
+            {(() => { const allImgs = [p.image, ...(p.gallery || [])].filter(Boolean); const src = allImgs[imgIdx] || allImgs[0]; return src ? <img src={src} alt={p.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} /> : <Placeholder tone={p.tone} label={p.name} />; })()}
           </div>
           <div className="pdp-info">
             {p.badge && <span className="eyebrow" style={{ color: 'var(--gold)' }}>● &nbsp; {p.badge}</span>}
@@ -376,7 +375,7 @@ const ProductPage = ({ productId, navigate, addToCart, products }) => {
             <>
                 <div className="pdp-options-label">Fragrance Notes</div>
                 <div className="pdp-options" style={{ marginBottom: 28 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, width: '100%' }}>
+                  <div className="pdp-notes-grid">
                     <div><div style={{ fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 6 }}>Top</div><div style={{ fontFamily: 'var(--serif)', fontSize: 15, fontStyle: 'italic' }}>{p.notes.top}</div></div>
                     <div><div style={{ fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 6 }}>Heart</div><div style={{ fontFamily: 'var(--serif)', fontSize: 15, fontStyle: 'italic' }}>{p.notes.heart}</div></div>
                     <div><div style={{ fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 6 }}>Base</div><div style={{ fontFamily: 'var(--serif)', fontSize: 15, fontStyle: 'italic' }}>{p.notes.base}</div></div>
@@ -401,9 +400,6 @@ const ProductPage = ({ productId, navigate, addToCart, products }) => {
               <button className="btn" onClick={() => addToCart(p.id, qty)}>
                 <span>Add to Cart</span><Icon name="bag" size={14} />
               </button>
-              <button className="btn-outline btn" style={{ flex: '0 0 auto', padding: '18px 22px' }} aria-label="wishlist">
-                <Icon name="heart" size={16} />
-              </button>
             </div>
 
             <div className="pdp-meta-list">
@@ -415,7 +411,8 @@ const ProductPage = ({ productId, navigate, addToCart, products }) => {
         </div>
       </div>
 
-      {/* Ingredients block */}
+      {/* Ingredients block — only shown when product has ingredients */}
+      {p.ingredients && p.ingredients.length > 0 &&
       <section className="ingredients">
         <div className="container">
           <div className="ingredients-grid">
@@ -425,7 +422,7 @@ const ProductPage = ({ productId, navigate, addToCart, products }) => {
               <p>We list every ingredient by source. Nothing hides behind a perfume number or an industry abbreviation. The label is the first taste of the brand.</p>
             </div>
             <div className="ingredient-list">
-              {(p.ingredients || []).map((ing, i) =>
+              {p.ingredients.map((ing, i) =>
               <div key={i} className="ingredient-pill">
                   <span className="dot"></span>
                   <span className="name">{ing.name}</span>
@@ -435,7 +432,7 @@ const ProductPage = ({ productId, navigate, addToCart, products }) => {
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* Related */}
       <section className="section section-cream">

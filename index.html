@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ashvi, Flavours of Elegance</title>
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=15" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%234F3E35'/%3E%3Ctext x='16' y='22' font-family='Playfair Display' font-size='18' fill='%23EAE0D5' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
@@ -37,7 +37,12 @@
       : 'https://api-production-377b.up.railway.app/v1';
 
     window.normalizeProduct = function normalizeProduct(p) {
-      const mainImg = p.imgSrc || (p.images && p.images[0] && p.images[0].url) || '';
+      const allImages = p.images || [];
+      const mainImgObj = allImages.find(i => i.isMain || i.is_main) || allImages[0];
+      const mainImg = p.imgSrc || (mainImgObj && mainImgObj.url) || '';
+      const gallery = allImages
+        .filter(i => !(i.isMain || i.is_main) && i.url && i.url !== mainImg)
+        .map(i => i.url);
       return {
         id: p.slug,
         name: p.name,
@@ -47,6 +52,7 @@
         mrp: p.mrp ? parseFloat(p.mrp) : undefined,
         badge: p.badge || undefined,
         image: mainImg,
+        gallery: gallery.length ? gallery : undefined,
         imgBg: p.imgBg || '#fdf8f2',
         size: p.volume || '',
         burn: p.burn_time || '',
@@ -62,10 +68,12 @@
     }
 
     function App() {
-      const { TICKER_ITEMS, REVIEWS } = window.ASHVI_DATA;
+      const { TICKER_ITEMS: STATIC_TICKER, REVIEWS: STATIC_REVIEWS } = window.ASHVI_DATA;
       const staticCategories = window.ASHVI_DATA.CATEGORIES;
       const [PRODUCTS, setProducts] = useState(window.ASHVI_DATA.PRODUCTS.map(window.normalizeProduct));
       const [CATEGORIES, setCategories] = useState(staticCategories);
+      const [REVIEWS, setReviews] = useState(STATIC_REVIEWS);
+      const [TICKER_ITEMS, setTickerItems] = useState(STATIC_TICKER);
       const [loading, setLoading] = useState(true);
       const [route, setRoute] = useState({ page: 'home' });
       const [cart, setCart] = useState([]);
@@ -74,15 +82,27 @@
       const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
       useEffect(() => {
-        fetch(API_BASE + '/products?limit=100')
-          .then(r => r.json())
-          .then(data => {
-            if (data.success && data.products.length > 0) {
-              setProducts(data.products.map(window.normalizeProduct));
-            }
-          })
-          .catch(() => {})
-          .finally(() => setLoading(false));
+        Promise.all([
+          fetch(API_BASE + '/products?limit=100').then(r => r.json()).catch(() => ({})),
+          fetch(API_BASE + '/cms/testimonials').then(r => r.json()).catch(() => ({})),
+          fetch(API_BASE + '/cms/ticker').then(r => r.json()).catch(() => ({})),
+        ]).then(([prodData, testimonialData, tickerData]) => {
+          if (prodData.success && prodData.products.length > 0) {
+            setProducts(prodData.products.map(window.normalizeProduct));
+          }
+          if (tickerData.success && tickerData.messages.length > 0) {
+            setTickerItems(tickerData.messages.map(m => m.message));
+          }
+          if (testimonialData.success && testimonialData.testimonials.length > 0) {
+            setReviews(testimonialData.testimonials.map(r => ({
+              text: r.body,
+              name: r.reviewer_name,
+              loc: r.reviewer_loc || '',
+              initial: r.reviewer_name ? r.reviewer_name[0].toUpperCase() : '?',
+              rating: r.rating,
+            })));
+          }
+        }).finally(() => setLoading(false));
       }, []);
 
       const navigate = (next) => {

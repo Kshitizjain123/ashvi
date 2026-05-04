@@ -283,3 +283,21 @@ INSERT INTO ticker_messages (id, message, sort_order) VALUES
   (gen_random_uuid(), 'Wedding & Diwali gifting now open',           3),
   (gen_random_uuid(), 'Sculpted candles · made one at a time',       4)
 ON CONFLICT DO NOTHING;
+
+-- TESTIMONIALS (admin-managed reviews shown on homepage)
+CREATE TABLE IF NOT EXISTS testimonials (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  reviewer_name VARCHAR(100) NOT NULL,
+  reviewer_loc  VARCHAR(100),
+  rating        SMALLINT NOT NULL DEFAULT 5 CHECK (rating BETWEEN 1 AND 5),
+  body          TEXT NOT NULL,
+  is_active     BOOLEAN DEFAULT true,
+  sort_order    INTEGER DEFAULT 0,
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+INSERT INTO testimonials (reviewer_name, reviewer_loc, rating, body, sort_order) VALUES
+  ('Aanya R.', 'Jaipur', 5, 'The Rose Bouquet arrived wrapped like a real bouquet. I almost didn''t want to light it, but when I did, the throw was gentle, never overpowering.', 0),
+  ('Vikram S.', 'Bengaluru', 5, 'Ordered the Kulhad pair as a housewarming gift. The terracotta detail is so thoughtful, and the rose petals on top make it feel like a real ritual.', 1),
+  ('Meera K.', 'Delhi', 5, 'The Diwali diya candle was the most photographed thing on our table this year. The sculpted rose looks unreal in person.', 2)
+ON CONFLICT DO NOTHING;
