@@ -113,25 +113,6 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
     document.body
   );
 
-  const bottomNav = ReactDOM.createPortal(
-    <nav className="store-bottom-nav">
-      <button className={'store-bottom-nav-item' + (currentPage === 'home' ? ' active' : '')} onClick={() => navigate({ page: 'home' })}>
-        <i className="ph ph-house" /><span>Home</span>
-      </button>
-      {categories.slice(0, 3).map(c => (
-        <button key={c.id} className={'store-bottom-nav-item' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
-          <i className="ph ph-flame" /><span>{c.name}</span>
-        </button>
-      ))}
-      <button className="store-bottom-nav-item" onClick={openCart}>
-        <i className="ph ph-shopping-bag" />
-        {cartCount > 0 && <span className="store-bottom-nav-cart-badge">{cartCount}</span>}
-        <span>Cart</span>
-      </button>
-    </nav>,
-    document.body
-  );
-
   return (
     <>
       <header className="nav">
@@ -163,7 +144,6 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
         </div>
       </header>
       {menuPortal}
-      {bottomNav}
     </>
   );
 };
