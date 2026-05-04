@@ -36,8 +36,8 @@ app.use(helmet())
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL,
-    'https://ashvifavoursofelegance.com',
-    'https://www.ashvifavoursofelegance.com',
+    'https://ashviflavoursofelegance.com',
+    'https://www.ashviflavoursofelegance.com',
     'http://localhost:8080',
     'http://localhost:5173',
   ].filter(Boolean),

@@ -9,7 +9,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
 
 [[redirects]]
-  from = "https://www.ashvifavoursofelegance.com/*"
-  to = "https://ashvifavoursofelegance.com/:splat"
+  from = "https://www.ashviflavoursofelegance.com/*"
+  to = "https://ashviflavoursofelegance.com/:splat"
   status = 301
   force = true

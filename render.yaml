@@ -23,7 +23,7 @@ services:
       - key: JWT_REFRESH_EXPIRES_IN
         value: 7d
       - key: FRONTEND_URL
-        value: https://ashvifavoursofelegance.com
+        value: https://ashviflavoursofelegance.com
       - key: CLOUDINARY_CLOUD_NAME
         value: placeholder
       - key: CLOUDINARY_API_KEY
