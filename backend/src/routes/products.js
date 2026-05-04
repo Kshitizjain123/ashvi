@@ -15,6 +15,8 @@ const formatProduct = (row) => ({
   badge: row.badge || null,
   imgSrc: row.img_src || '',
   imgBg: row.img_bg || '#fdf8f2',
+  categorySlug: row.category_slug || null,
+  categoryName: row.category_name || null,
 })
 
 // GET /products
@@ -40,7 +42,7 @@ router.get('/', async (req, res, next) => {
 
     const query = `
       SELECT p.id, p.slug, p.name, p.tagline, p.volume, p.price, p.mrp, p.badge, p.img_bg,
-             pi.url AS img_src
+             pi.url AS img_src, c.slug AS category_slug, c.name AS category_name
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = true
@@ -59,8 +61,9 @@ router.get('/featured', async (req, res, next) => {
   try {
     const { rows } = await db.query(`
       SELECT p.id, p.slug, p.name, p.tagline, p.volume, p.price, p.mrp, p.badge, p.img_bg,
-             pi.url AS img_src
+             pi.url AS img_src, c.slug AS category_slug, c.name AS category_name
       FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = true
       WHERE p.is_featured = true AND p.is_active = true
       ORDER BY p.created_at DESC LIMIT 8

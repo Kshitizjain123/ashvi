@@ -96,6 +96,26 @@ router.delete('/:id', async (req, res, next) => {
   } catch (err) { next(err) }
 })
 
+// GET /admin/products/:id/images
+router.get('/:id/images', async (req, res, next) => {
+  try {
+    const { rows } = await db.query(
+      'SELECT id, url, alt_text, is_main, sort_order FROM product_images WHERE product_id = $1 ORDER BY is_main DESC, sort_order ASC',
+      [req.params.id]
+    )
+    res.json({ success: true, images: rows })
+  } catch (err) { next(err) }
+})
+
+// PATCH /admin/products/:id/images/:imgId  — set as main
+router.patch('/:id/images/:imgId', async (req, res, next) => {
+  try {
+    await db.query('UPDATE product_images SET is_main = false WHERE product_id = $1', [req.params.id])
+    await db.query('UPDATE product_images SET is_main = true WHERE id = $1 AND product_id = $2', [req.params.imgId, req.params.id])
+    res.json({ success: true })
+  } catch (err) { next(err) }
+})
+
 // POST /admin/products/:id/images
 router.post('/:id/images', async (req, res, next) => {
   try {

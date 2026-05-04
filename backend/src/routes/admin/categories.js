@@ -45,4 +45,16 @@ router.patch('/:id', async (req, res, next) => {
   } catch (err) { next(err) }
 })
 
+// DELETE /admin/categories/:id
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const { rows } = await db.query('SELECT COUNT(*) FROM products WHERE category_id = $1 AND is_active = true', [req.params.id])
+    if (parseInt(rows[0].count) > 0) {
+      throw new AppError('Cannot delete a category that has active products. Deactivate its products first.', 400, 'VALIDATION_ERROR')
+    }
+    await db.query('DELETE FROM categories WHERE id = $1', [req.params.id])
+    res.json({ success: true })
+  } catch (err) { next(err) }
+})
+
 module.exports = router

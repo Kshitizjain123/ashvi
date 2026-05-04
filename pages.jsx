@@ -314,11 +314,24 @@ const CategoryPage = ({ categoryId, navigate, addToCart, products, categories })
 
 // ----- PRODUCT DETAIL -----
 const ProductPage = ({ productId, navigate, addToCart, products }) => {
-  const p = products.find((x) => x.id === productId) || products[0];
+  const base = products.find((x) => x.id === productId) || products.find((x) => x.slug === productId) || products[0];
+  const [p, setP] = useState2(base);
   const [imgIdx, setImgIdx] = useState2(0);
   const [qty, setQty] = useState2(1);
-  const [option, setOption] = useState2(p.weight ? 'Standard' : 'Standard');
-  useEffect2(() => {setImgIdx(0);setQty(1);window.scrollTo({ top: 0, behavior: 'smooth' });}, [productId]);
+  const [option, setOption] = useState2('Standard');
+  useEffect2(() => {
+    setP(products.find((x) => x.id === productId) || products[0]);
+    setImgIdx(0); setQty(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.API_BASE && window.normalizeProduct) {
+      fetch(window.API_BASE + '/products/' + productId)
+        .then(r => r.json())
+        .then(data => { if (data.success && data.product) setP(window.normalizeProduct(data.product)); })
+        .catch(() => {});
+    }
+  }, [productId]);
+
+  if (!p) return <div className="page" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: 'var(--gold)', fontFamily: 'var(--serif)', fontSize: 18 }}>Loading…</span></div>;
 
   const related = products.filter((x) => x.category === p.category && x.id !== p.id).slice(0, 3);
   const angles = ['FRONT', 'DETAIL', 'LIFESTYLE', 'PACKAGING'];
@@ -412,7 +425,7 @@ const ProductPage = ({ productId, navigate, addToCart, products }) => {
               <p>We list every ingredient by source. Nothing hides behind a perfume number or an industry abbreviation. The label is the first taste of the brand.</p>
             </div>
             <div className="ingredient-list">
-              {p.ingredients.map((ing, i) =>
+              {(p.ingredients || []).map((ing, i) =>
               <div key={i} className="ingredient-pill">
                   <span className="dot"></span>
                   <span className="name">{ing.name}</span>

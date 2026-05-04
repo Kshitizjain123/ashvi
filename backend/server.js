@@ -1,4 +1,5 @@
 require('dotenv').config()
+const path = require('path')
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
@@ -34,15 +35,12 @@ const app = express()
 app.use(helmet())
 app.use(cors({
   origin: [
-    process.env.FRONTEND_URL || 'http://localhost:5173',
-    'https://kshitizjain123.github.io',
+    process.env.FRONTEND_URL,
+    'https://ashvifavoursofelegance.com',
+    'https://www.ashvifavoursofelegance.com',
     'http://localhost:8080',
     'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:5176',
-    'http://localhost:5177',
-  ],
+  ].filter(Boolean),
   credentials: true,
 }))
 
@@ -55,6 +53,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/health', (req, res) => res.json({ status: 'ok', version: '1.0.0' }))
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 // Public routes
 app.use('/v1/auth', authLimiter, authRoutes)
