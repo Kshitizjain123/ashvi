@@ -180,7 +180,7 @@
     .bottom-nav-item.active, .bottom-nav-item:hover { color: #fff; background: rgba(255,255,255,.1); }
 
     body.is-mobile .sidebar { display: none; }
-    body.is-mobile .bottom-nav { display: flex; }
+    body.is-mobile.logged-in .bottom-nav { display: flex; }
     body.is-mobile .main { padding-bottom: 76px; }
     body.is-mobile .content { padding: 16px; }
     body.is-mobile .topbar { padding: 14px 16px; }
@@ -365,18 +365,7 @@
     </div>
   </div>
 
-  <!-- BOTTOM NAV (mobile) -->
-  <nav class="bottom-nav" id="bottom-nav">
-    <button class="bottom-nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><i class="ph ph-squares-four"></i>Home</button>
-    <button class="bottom-nav-item" data-section="orders" onclick="showSection('orders')"><i class="ph ph-package"></i>Orders</button>
-    <button class="bottom-nav-item" data-section="products" onclick="showSection('products')"><i class="ph ph-flame"></i>Products</button>
-    <button class="bottom-nav-item" data-section="reviews" onclick="showSection('reviews')"><i class="ph ph-star"></i>Reviews</button>
-    <button class="bottom-nav-item" data-section="users" onclick="showSection('users')"><i class="ph ph-users"></i>Users</button>
-    <button class="bottom-nav-item" data-section="categories" onclick="showSection('categories')"><i class="ph ph-folders"></i>Categories</button>
-    <button class="bottom-nav-item" data-section="ticker" onclick="showSection('ticker')"><i class="ph ph-megaphone"></i>Ticker</button>
-    <button class="bottom-nav-item" data-section="coupons" onclick="showSection('coupons')"><i class="ph ph-tag"></i>Coupons</button>
-    <button class="bottom-nav-item" onclick="logout()"><i class="ph ph-sign-out"></i>Sign out</button>
-  </nav>
+  </div>
 </div>
 
 <!-- ADD / EDIT PRODUCT MODAL -->
@@ -648,6 +637,7 @@
       document.getElementById('admin-email').textContent = data.admin.email
       document.getElementById('login-screen').style.display = 'none'
       document.getElementById('app').style.display = 'block'
+      document.body.classList.add('logged-in')
       loadDashboard()
     } else {
       document.getElementById('login-error').textContent = data.error?.message || 'Login failed'
@@ -1455,10 +1445,24 @@
   if (token) {
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('app').style.display = 'block'
+    document.body.classList.add('logged-in')
     loadDashboard()
   }
 
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') login() })
 </script>
+
+<!-- BOTTOM NAV — direct child of body so position:fixed is never clipped by #app display:none -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bottom-nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><i class="ph ph-squares-four"></i>Home</button>
+  <button class="bottom-nav-item" data-section="orders" onclick="showSection('orders')"><i class="ph ph-package"></i>Orders</button>
+  <button class="bottom-nav-item" data-section="products" onclick="showSection('products')"><i class="ph ph-flame"></i>Products</button>
+  <button class="bottom-nav-item" data-section="reviews" onclick="showSection('reviews')"><i class="ph ph-star"></i>Reviews</button>
+  <button class="bottom-nav-item" data-section="users" onclick="showSection('users')"><i class="ph ph-users"></i>Users</button>
+  <button class="bottom-nav-item" data-section="categories" onclick="showSection('categories')"><i class="ph ph-folders"></i>Categories</button>
+  <button class="bottom-nav-item" data-section="ticker" onclick="showSection('ticker')"><i class="ph ph-megaphone"></i>Ticker</button>
+  <button class="bottom-nav-item" data-section="coupons" onclick="showSection('coupons')"><i class="ph ph-tag"></i>Coupons</button>
+  <button class="bottom-nav-item" onclick="logout()"><i class="ph ph-sign-out"></i>Sign out</button>
+</nav>
 </body>
 </html>
