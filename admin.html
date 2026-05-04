@@ -681,7 +681,11 @@
 
   async function deleteProduct(id) {
     if (!confirm('Remove this product?')) return
-    await api('/admin/products/' + id, { method: 'DELETE' })
+    const res = await api('/admin/products/' + id, { method: 'DELETE' })
+    if (!res.success) {
+      alert('Failed to remove product: ' + (res.error?.message || 'Unknown error'))
+      return
+    }
     loadProducts()
   }
 
