@@ -542,7 +542,7 @@
       <div class="loading">Loading images…</div>
     </div>
 
-    <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:0">
+    <div id="img-upload-section" style="border-top:1px solid var(--border);padding-top:12px;margin-top:0;display:none">
       <div style="font-family:sans-serif;font-size:13px;font-weight:600;color:var(--brown);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">Upload New Image</div>
       <div class="upload-zone" id="upload-zone" onclick="document.getElementById('img-file-input').click()"
            ondragover="event.preventDefault();this.classList.add('drag')"
@@ -558,9 +558,14 @@
       </div>
       <div class="upload-progress" id="upload-progress"></div>
       <div class="modal-footer" style="margin-top:16px">
-        <button class="btn-sm" onclick="closeImagesModal()">Done</button>
+        <button class="btn-sm" onclick="toggleUploadSection()">Cancel</button>
         <button class="btn-sm btn-success" id="upload-btn" onclick="uploadImage()">Upload Image</button>
       </div>
+    </div>
+
+    <div class="modal-footer" id="img-main-footer" style="margin-top:12px">
+      <button class="btn-sm" onclick="closeImagesModal()">Done</button>
+      <button class="btn-sm btn-success" onclick="toggleUploadSection()">+ Add Image</button>
     </div>
   </div>
 </div>
@@ -1256,6 +1261,20 @@
     loadProducts()
   }
 
+  function toggleUploadSection(forceShow) {
+    const section = document.getElementById('img-upload-section')
+    const mainFooter = document.getElementById('img-main-footer')
+    const show = forceShow !== undefined ? forceShow : section.style.display === 'none'
+    section.style.display = show ? '' : 'none'
+    mainFooter.style.display = show ? 'none' : ''
+    if (!show) {
+      document.getElementById('upload-progress').textContent = ''
+      document.getElementById('img-url-input').value = ''
+      document.getElementById('img-preview').style.display = 'none'
+      document.getElementById('upload-hint').style.display = ''
+    }
+  }
+
   async function loadProductImages() {
     document.getElementById('img-grid').innerHTML = '<div class="loading">Loading…</div>'
     const data = await api('/admin/products/' + imagesProductId + '/images')
@@ -1265,6 +1284,7 @@
     }
     if (!data.images.length) {
       document.getElementById('img-grid').innerHTML = '<div class="loading">No images yet — upload one below</div>'
+      toggleUploadSection(true)
       return
     }
     document.getElementById('img-grid').innerHTML = data.images.map(img => `
@@ -1276,6 +1296,7 @@
           <button class="btn-sm btn-danger" onclick="deleteProductImage('${img.id}')">Delete</button>
         </div>
       </div>`).join('')
+    toggleUploadSection(false)
   }
 
   async function setMainImage(imgId) {
