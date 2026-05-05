@@ -35,6 +35,7 @@ const adminTestimonialRoutes = require('./src/routes/admin/testimonials')
 const db = require('./src/config/db')
 
 const app = express()
+app.set('trust proxy', 1)
 
 // Run any pending inline migrations on startup
 ;(async () => {
