@@ -1441,13 +1441,15 @@ img.footer-logo-img {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    min-height: 142px;
   }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
   .nav-inner .logo {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
   .mobile-menu-scrim { display: block; pointer-events: none; }
 }
