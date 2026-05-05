@@ -132,8 +132,12 @@
                      align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
     .modal { background: #fff; border-radius: 12px; padding: 32px; width: 640px; max-width: 95vw;
-             max-height: 90vh; overflow-y: auto; }
-    .modal h3 { font-size: 18px; color: var(--brown); margin-bottom: 24px; }
+             max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal h3 { font-size: 18px; color: var(--brown); margin-bottom: 24px; padding-right: 28px; }
+    .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none;
+                   font-size: 20px; line-height: 1; color: var(--muted); cursor: pointer; padding: 4px 6px;
+                   border-radius: 4px; }
+    .modal-close:hover { background: var(--cream-dark); color: var(--text); }
     .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 
     /* image manager */
@@ -370,6 +374,7 @@
 <!-- ADD / EDIT PRODUCT MODAL -->
 <div class="modal-overlay" id="product-modal">
   <div class="modal">
+    <button class="modal-close" onclick="closeProductModal()">&#x2715;</button>
     <h3 id="product-modal-title">Add Product</h3>
     <div class="form-grid">
       <div class="field full"><label>Name</label><input type="text" id="p-name" /></div>
@@ -437,6 +442,7 @@
 <!-- ADD / EDIT TESTIMONIAL MODAL -->
 <div class="modal-overlay" id="testimonial-modal">
   <div class="modal" style="width:500px">
+    <button class="modal-close" onclick="closeTestimonialModal()">&#x2715;</button>
     <h3 id="testimonial-modal-title">Add Testimonial</h3>
     <div class="form-grid">
       <div class="field"><label>Reviewer Name</label><input type="text" id="t-name" placeholder="e.g. Aanya R." /></div>
@@ -467,6 +473,7 @@
 <!-- ADD / EDIT TICKER MODAL -->
 <div class="modal-overlay" id="ticker-modal">
   <div class="modal" style="width:460px">
+    <button class="modal-close" onclick="closeTickerModal()">&#x2715;</button>
     <h3 id="ticker-modal-title">Add Ticker Message</h3>
     <div class="form-grid">
       <div class="field full"><label>Message</label><input type="text" id="tk-message" placeholder="e.g. Free shipping on orders above ₹1,499" /></div>
@@ -488,6 +495,7 @@
 <!-- ADD COUPON MODAL -->
 <div class="modal-overlay" id="coupon-modal">
   <div class="modal">
+    <button class="modal-close" onclick="closeCouponModal()">&#x2715;</button>
     <h3>Add Coupon</h3>
     <div class="form-grid">
       <div class="field"><label>Code</label><input type="text" id="c-code" placeholder="e.g. ASHVI10" /></div>
@@ -512,6 +520,7 @@
 <!-- ADD / EDIT CATEGORY MODAL -->
 <div class="modal-overlay" id="category-modal">
   <div class="modal" style="width:480px">
+    <button class="modal-close" onclick="closeCategoryModal()">&#x2715;</button>
     <h3 id="category-modal-title">Add Category</h3>
     <div class="form-grid">
       <div class="field full"><label>Name</label><input type="text" id="cat-name" placeholder="e.g. Seasonal" /></div>
@@ -535,6 +544,7 @@
 <!-- IMAGE MANAGER MODAL -->
 <div class="modal-overlay" id="images-modal">
   <div class="modal" style="width:700px">
+    <button class="modal-close" onclick="closeImagesModal()">&#x2715;</button>
     <h3 id="images-modal-title">Product Images</h3>
 
     <div class="img-grid" id="img-grid">
@@ -566,6 +576,7 @@
 
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal" style="width:400px;text-align:center">
+    <button class="modal-close" onclick="resolveConfirm(false)">&#x2715;</button>
     <p id="confirm-modal-text" style="font-size:16px;margin-bottom:24px"></p>
     <div class="modal-footer" style="justify-content:center">
       <button class="btn-sm" onclick="resolveConfirm(false)">Cancel</button>
