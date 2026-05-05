@@ -395,7 +395,16 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
 
       <section className="cart-recent-section">
         <div className="container">
-          <h2 className="cart-recent-title">Recently viewed <em>products.</em></h2>
+          <div className="section-head">
+            <div className="left">
+              <span className="eyebrow">Recently viewed</span>
+              <h2 className="section-title">A few <em>new arrivals</em></h2>
+              <p className="section-sub">Pieces you may want to add before checkout, hand poured in small batches and finished with Ashvi's quiet gift-ready details.</p>
+            </div>
+            <button className="link-underline" onClick={() => navigate({ page: 'category', categoryId: 'signature' })}>
+              View all <Icon name="arrowSm" size={14} />
+            </button>
+          </div>
           <div className="product-grid three cart-recent-products">
             {recent.map(p => (
               <ProductCard key={p.id} product={p} navigate={navigate} addToCart={addFromCheckout} />

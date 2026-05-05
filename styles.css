@@ -1146,19 +1146,6 @@ img.footer-logo-img {
   padding: 0 0 116px;
   background: var(--cream);
 }
-.cart-recent-title {
-  margin: 0 0 44px;
-  font-family: var(--serif);
-  font-size: clamp(36px, 4vw, 56px);
-  line-height: 1.05;
-  font-weight: 400;
-  color: var(--espresso);
-  letter-spacing: -0.015em;
-}
-.cart-recent-title em {
-  font-style: italic;
-}
-
 .drawer-empty {
   flex: 1;
   display: flex;
@@ -1666,11 +1653,6 @@ img.footer-logo-img {
     margin-left: 0;
   }
   .cart-recent-section { padding-bottom: 76px; }
-  .cart-recent-title {
-    margin-bottom: 28px;
-    text-align: left;
-    font-size: 24px;
-  }
   .cat-grid { grid-template-columns: 1fr; }
   .review-grid { grid-template-columns: 1fr; }
   .banners { display: none; }
