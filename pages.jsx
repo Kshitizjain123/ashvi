@@ -388,26 +388,9 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
       <section className="cart-recent-section">
         <div className="container-tight">
           <h2 className="cart-recent-title">Recently Viewed Products</h2>
-          <div className="cart-recent-grid">
+          <div className="product-grid three cart-recent-products">
             {recent.map(p => (
-              <article className="cart-recent-card" key={p.id} onClick={() => navigate({ page: 'product', productId: p.id })}>
-                <div className="cart-recent-media">
-                  {p.image
-                    ? <img src={p.image} alt={p.name} />
-                    : <Placeholder tone="cream" label={p.name.split(' ')[0]} />}
-                </div>
-                <div className="cart-recent-copy">
-                  <h3>{p.name}</h3>
-                  <p>{p.categoryName}</p>
-                  <span>{p.size || p.burn || 'Hand poured'}</span>
-                </div>
-                <div className="cart-recent-price">
-                  <strong>{fmtPrice(p.price)}</strong>
-                  {p.mrp && <small>M.R.P: {fmtPrice(p.mrp)}</small>}
-                  {p.mrp && <em>{Math.round((1 - p.price / p.mrp) * 100)}% OFF</em>}
-                </div>
-                <button className="cart-add-btn" onClick={(e) => { e.stopPropagation(); addToCart(p.id); }}>Add to Cart</button>
-              </article>
+              <ProductCard key={p.id} product={p} navigate={navigate} addToCart={addToCart} />
             ))}
           </div>
         </div>
