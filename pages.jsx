@@ -325,12 +325,12 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
     <div className="page cart-page">
       <section className="cart-shell">
         <div className="container">
-          <div className="cart-breadcrumb">
-            <a onClick={() => navigate({ page: 'home' })}>Home</a>
-            <span>/</span>
-            <span>Cart</span>
+          <div className="breadcrumb">
+            <a onClick={() => navigate({ page: 'home' })} style={{ cursor: 'pointer' }}>Home</a>
+            <span style={{ margin: '0 12px', color: 'var(--gold)' }}>/</span>
+            Checkout
           </div>
-          <h1 className="cart-title">Your Cart</h1>
+          <h1 className="cart-title">Checkout</h1>
 
           {items.length === 0 ? (
             <div className="cart-empty-page">

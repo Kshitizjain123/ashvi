@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ashvi, Flavours of Elegance</title>
-  <link rel="stylesheet" href="styles.css?v=18" />
+  <link rel="stylesheet" href="styles.css?v=19" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%234F3E35'/%3E%3Ctext x='16' y='22' font-family='Playfair Display' font-size='18' fill='%23EAE0D5' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
@@ -18,8 +18,8 @@
 
   <script src="data.js?v=14"></script>
   <script type="text/babel" src="tweaks-panel.jsx?v=14"></script>
-  <script type="text/babel" src="components.jsx?v=15"></script>
-  <script type="text/babel" src="pages.jsx?v=17"></script>
+  <script type="text/babel" src="components.jsx?v=16"></script>
+  <script type="text/babel" src="pages.jsx?v=18"></script>
 
   <script type="text/babel">
     const { useState, useEffect, useMemo } = React;
@@ -148,7 +148,7 @@
         pageEl = <ProductPage productId={route.productId} navigate={navigate} addToCart={addToCart} products={PRODUCTS} />;
       } else if (route.page === 'about') {
         pageEl = <AboutPage navigate={navigate} />;
-      } else if (route.page === 'cart') {
+      } else if (route.page === 'checkout' || route.page === 'cart') {
         pageEl = <CartPage
           navigate={navigate}
           cart={cart}
@@ -162,7 +162,7 @@
       }
 
       const screenLabel = {
-        home: '01 Home', category: '02 Category', product: '03 Product Detail', about: '04 About', cart: '05 Cart', privacy: '06 Privacy'
+        home: '01 Home', category: '02 Category', product: '03 Product Detail', about: '04 About', checkout: '05 Checkout', cart: '05 Checkout', privacy: '06 Privacy'
       }[route.page];
 
       return (
@@ -180,13 +180,13 @@
           {pageEl}
           <Footer navigate={navigate} />
           {ReactDOM.createPortal(
-            <button className="floating-cart" onClick={() => navigate({ page: 'cart' })} aria-label="Cart">
+            <button className="floating-cart" onClick={() => navigate({ page: 'checkout' })} aria-label="Cart">
               <Icon name="bag" size={20} />
               {cartCount > 0 && <span className="floating-cart-count">{cartCount}</span>}
             </button>,
             document.body
           )}
-          <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cart} products={PRODUCTS} updateQty={updateQty} removeItem={removeItem} />
+          <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cart} products={PRODUCTS} updateQty={updateQty} removeItem={removeItem} navigate={navigate} />
           <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} products={PRODUCTS} navigate={navigate} />
 
           <TweaksPanel title="Tweaks">

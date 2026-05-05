@@ -982,20 +982,6 @@ img.footer-logo-img {
   padding: 72px 0 96px;
   background: var(--cream);
 }
-.cart-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 26px;
-  font-size: 12px;
-  color: var(--espresso-soft);
-}
-.cart-breadcrumb a {
-  color: var(--espresso);
-}
-.cart-breadcrumb span {
-  color: var(--gold);
-}
 .cart-title {
   margin: 0 0 64px;
   font-family: var(--serif);
@@ -1269,12 +1255,16 @@ img.footer-logo-img {
   padding: 80px 0 60px;
   text-align: center;
 }
-.category-hero .breadcrumb {
+.category-hero .breadcrumb,
+.cart-shell .breadcrumb {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--espresso-soft);
   margin-bottom: 18px;
+}
+.cart-shell .breadcrumb a:hover {
+  color: var(--espresso);
 }
 .category-hero h1 {
   font-family: var(--serif);

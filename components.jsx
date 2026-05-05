@@ -103,7 +103,7 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
           <button className="mobile-menu-action" onClick={() => { setMenuOpen(false); openSearch(); }}>
             <Icon name="search" size={16} /><span>Search</span>
           </button>
-          <button className="mobile-menu-action" onClick={() => { setMenuOpen(false); navigate({ page: 'cart' }); }}>
+          <button className="mobile-menu-action" onClick={() => { setMenuOpen(false); navigate({ page: 'checkout' }); }}>
             <Icon name="bag" size={16} /><span>Cart {cartCount > 0 ? `(${cartCount})` : ''}</span>
           </button>
         </div>
@@ -136,7 +136,7 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
             <button className="nav-icon nav-icon-account" aria-label="Account">
               <Icon name="user" size={18} />
             </button>
-            <button className="nav-icon nav-icon-cart" onClick={() => navigate({ page: 'cart' })} aria-label="Cart">
+            <button className="nav-icon nav-icon-cart" onClick={() => navigate({ page: 'checkout' })} aria-label="Cart">
               <Icon name="bag" size={18} />
               {cartCount > 0 && <span className="nav-cart-count">{cartCount}</span>}
             </button>
@@ -255,7 +255,7 @@ const SearchOverlay = ({ open, onClose, products, navigate }) => {
 };
 
 // ----- Cart drawer -----
-const CartDrawer = ({ open, onClose, cart, products, updateQty, removeItem }) => {
+const CartDrawer = ({ open, onClose, cart, products, updateQty, removeItem, navigate }) => {
   const items = cart.map(c => ({ ...c, product: products.find(p => p.id === c.id) })).filter(i => i.product);
   const subtotal = items.reduce((s, i) => s + i.product.price * i.qty, 0);
   const shipping = subtotal > 1499 || subtotal === 0 ? 0 : 89;
@@ -301,7 +301,9 @@ const CartDrawer = ({ open, onClose, cart, products, updateQty, removeItem }) =>
             <div className="drawer-row"><span className="l">Subtotal</span><span style={{ fontWeight: 600 }}>{fmtPrice(subtotal)}</span></div>
             <div className="drawer-row"><span className="l">Shipping</span><span style={{ fontWeight: 600 }}>{shipping === 0 ? 'Complimentary' : fmtPrice(shipping)}</span></div>
             <div className="drawer-row total"><span className="l" style={{ fontSize: 14 }}>Total · incl. tax</span><span className="v">{fmtPrice(subtotal + shipping)}</span></div>
-            <button className="btn"><span>Proceed to Checkout</span><Icon name="arrow" size={16} /></button>
+            <button className="btn" onClick={() => { onClose(); navigate({ page: 'checkout' }); }}>
+              <span>Proceed to Checkout</span><Icon name="arrow" size={16} />
+            </button>
           </div>
         )}
       </aside>
