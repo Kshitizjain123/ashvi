@@ -137,7 +137,7 @@
     .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 
     /* image manager */
-    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 8px; }
+    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
     .img-card { border: 2px solid var(--border); border-radius: 8px; overflow: hidden; position: relative; background: var(--cream); }
     .img-card.main { border-color: var(--brown); }
     .img-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
@@ -145,8 +145,8 @@
                       font-size: 10px; font-family: 'Figtree', sans-serif; padding: 2px 7px; border-radius: 10px; }
     .img-card-actions { display: flex; gap: 4px; padding: 6px; background: #fff; }
     .img-card-actions button { flex: 1; font-size: 11px; padding: 4px 0; }
-    .upload-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 14px;
-                   text-align: center; cursor: pointer; transition: border-color .15s; background: var(--cream); }
+    .upload-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 28px;
+                   text-align: center; cursor: pointer; transition: border-color .15s; }
     .upload-zone:hover, .upload-zone.drag { border-color: var(--brown); background: var(--cream-dark); }
     .upload-zone input { display: none; }
     .upload-zone p { font-family: 'Figtree', sans-serif; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
@@ -542,7 +542,7 @@
       <div class="loading">Loading images…</div>
     </div>
 
-    <div id="img-upload-section" style="border-top:1px solid var(--border);padding-top:12px;margin-top:0;display:none">
+    <div style="border-top:1px solid var(--border);padding-top:20px;margin-top:4px">
       <div style="font-family:sans-serif;font-size:13px;font-weight:600;color:var(--brown);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">Upload New Image</div>
       <div class="upload-zone" id="upload-zone" onclick="document.getElementById('img-file-input').click()"
            ondragover="event.preventDefault();this.classList.add('drag')"
@@ -558,14 +558,9 @@
       </div>
       <div class="upload-progress" id="upload-progress"></div>
       <div class="modal-footer" style="margin-top:16px">
-        <button class="btn-sm" onclick="toggleUploadSection()">Cancel</button>
+        <button class="btn-sm" onclick="closeImagesModal()">Done</button>
         <button class="btn-sm btn-success" id="upload-btn" onclick="uploadImage()">Upload Image</button>
       </div>
-    </div>
-
-    <div class="modal-footer" id="img-main-footer" style="margin-top:12px">
-      <button class="btn-sm" onclick="closeImagesModal()">Done</button>
-      <button class="btn-sm btn-success" onclick="toggleUploadSection()">+ Add Image</button>
     </div>
   </div>
 </div>
@@ -1261,20 +1256,6 @@
     loadProducts()
   }
 
-  function toggleUploadSection(forceShow) {
-    const section = document.getElementById('img-upload-section')
-    const mainFooter = document.getElementById('img-main-footer')
-    const show = forceShow !== undefined ? forceShow : section.style.display === 'none'
-    section.style.display = show ? '' : 'none'
-    mainFooter.style.display = show ? 'none' : ''
-    if (!show) {
-      document.getElementById('upload-progress').textContent = ''
-      document.getElementById('img-url-input').value = ''
-      document.getElementById('img-preview').style.display = 'none'
-      document.getElementById('upload-hint').style.display = ''
-    }
-  }
-
   async function loadProductImages() {
     document.getElementById('img-grid').innerHTML = '<div class="loading">Loading…</div>'
     const data = await api('/admin/products/' + imagesProductId + '/images')
@@ -1284,7 +1265,6 @@
     }
     if (!data.images.length) {
       document.getElementById('img-grid').innerHTML = '<div class="loading">No images yet — upload one below</div>'
-      toggleUploadSection(true)
       return
     }
     document.getElementById('img-grid').innerHTML = data.images.map(img => `
@@ -1296,7 +1276,6 @@
           <button class="btn-sm btn-danger" onclick="deleteProductImage('${img.id}')">Delete</button>
         </div>
       </div>`).join('')
-    toggleUploadSection(false)
   }
 
   async function setMainImage(imgId) {
