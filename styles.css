@@ -978,15 +978,20 @@ img.footer-logo-img {
 .cart-page {
   background: var(--cream);
 }
+.cart-hero {
+  background: var(--sandstone);
+  padding: 80px 0 60px;
+  text-align: center;
+}
 .cart-shell {
   padding: 72px 0 96px;
   background: var(--cream);
 }
 .cart-title {
-  margin: 0 0 64px;
+  margin: 0;
   font-family: var(--serif);
-  font-size: clamp(48px, 6vw, 88px);
-  line-height: 0.95;
+  font-size: clamp(48px, 5.5vw, 76px);
+  line-height: 1.02;
   font-weight: 400;
   color: var(--espresso);
   letter-spacing: -0.02em;
@@ -1256,14 +1261,14 @@ img.footer-logo-img {
   text-align: center;
 }
 .category-hero .breadcrumb,
-.cart-shell .breadcrumb {
+.cart-hero .breadcrumb {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--espresso-soft);
   margin-bottom: 18px;
 }
-.cart-shell .breadcrumb a:hover {
+.cart-hero .breadcrumb a:hover {
   color: var(--espresso);
 }
 .category-hero h1 {
@@ -1645,7 +1650,7 @@ img.footer-logo-img {
 @media (max-width: 720px) {
   .product-grid, .product-grid.three { grid-template-columns: repeat(2, 1fr); }
   .cart-shell { padding: 48px 0 64px; }
-  .cart-title { margin-bottom: 36px; }
+  .cart-title { margin-bottom: 0; }
   .cart-line-page {
     grid-template-columns: 28px 86px minmax(0, 1fr);
     gap: 14px;

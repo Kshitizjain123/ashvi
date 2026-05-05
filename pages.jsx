@@ -323,7 +323,7 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
 
   return (
     <div className="page cart-page">
-      <section className="cart-shell">
+      <section className="cart-hero">
         <div className="container">
           <div className="breadcrumb">
             <a onClick={() => navigate({ page: 'home' })} style={{ cursor: 'pointer' }}>Home</a>
@@ -331,7 +331,11 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
             Checkout
           </div>
           <h1 className="cart-title">Checkout</h1>
+        </div>
+      </section>
 
+      <section className="cart-shell">
+        <div className="container">
           {items.length === 0 ? (
             <div className="cart-empty-page">
               <span className="quote-mark">"</span>
