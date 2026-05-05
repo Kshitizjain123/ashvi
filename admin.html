@@ -137,7 +137,7 @@
     .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 
     /* image manager */
-    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 8px; }
     .img-card { border: 2px solid var(--border); border-radius: 8px; overflow: hidden; position: relative; background: var(--cream); }
     .img-card.main { border-color: var(--brown); }
     .img-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
@@ -542,7 +542,7 @@
       <div class="loading">Loading images…</div>
     </div>
 
-    <div style="border-top:1px solid var(--border);padding-top:20px;margin-top:4px">
+    <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:0">
       <div style="font-family:sans-serif;font-size:13px;font-weight:600;color:var(--brown);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">Upload New Image</div>
       <div class="upload-zone" id="upload-zone" onclick="document.getElementById('img-file-input').click()"
            ondragover="event.preventDefault();this.classList.add('drag')"
