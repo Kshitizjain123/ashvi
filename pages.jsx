@@ -324,7 +324,7 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
   return (
     <div className="page cart-page">
       <section className="cart-shell">
-        <div className="container-tight">
+        <div className="container">
           <div className="cart-breadcrumb">
             <a onClick={() => navigate({ page: 'home' })}>Home</a>
             <span>/</span>
@@ -386,8 +386,8 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
       </section>
 
       <section className="cart-recent-section">
-        <div className="container-tight">
-          <h2 className="cart-recent-title">Recently Viewed Products</h2>
+        <div className="container">
+          <h2 className="cart-recent-title">Recently viewed <em>products.</em></h2>
           <div className="product-grid three cart-recent-products">
             {recent.map(p => (
               <ProductCard key={p.id} product={p} navigate={navigate} addToCart={addToCart} />

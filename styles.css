@@ -999,11 +999,11 @@ img.footer-logo-img {
 .cart-title {
   margin: 0 0 64px;
   font-family: var(--serif);
-  font-size: clamp(42px, 5vw, 64px);
-  line-height: 1;
-  font-weight: 500;
+  font-size: clamp(48px, 6vw, 88px);
+  line-height: 0.95;
+  font-weight: 400;
   color: var(--espresso);
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 .cart-layout-page {
   display: grid;
@@ -1161,13 +1161,15 @@ img.footer-logo-img {
 }
 .cart-recent-title {
   margin: 0 0 44px;
-  text-align: center;
   font-family: var(--serif);
-  font-size: 28px;
-  line-height: 1.15;
-  font-weight: 600;
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: 1.05;
+  font-weight: 400;
   color: var(--espresso);
-  text-transform: uppercase;
+  letter-spacing: -0.015em;
+}
+.cart-recent-title em {
+  font-style: italic;
 }
 
 .drawer-empty {
