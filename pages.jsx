@@ -315,6 +315,7 @@ const CategoryPage = ({ categoryId, navigate, addToCart, products, categories })
 
 // ----- CART -----
 const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }) => {
+  const [checkoutInfo, setCheckoutInfo] = useState2({ name: '', mobile: '', address: '' });
   const items = cart.map(c => ({ ...c, product: products.find(p => p.id === c.id) })).filter(i => i.product);
   const subtotal = items.reduce((s, i) => s + i.product.price * i.qty, 0);
   const shipping = subtotal > 1499 || subtotal === 0 ? 0 : 89;
@@ -323,6 +324,30 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
   const addFromCheckout = (id) => {
     addToCart(id, 1, { openDrawer: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const setCheckoutField = (field, value) => {
+    setCheckoutInfo(info => ({ ...info, [field]: value }));
+  };
+  const openWhatsAppOrder = (e) => {
+    e.preventDefault();
+    const orderLines = items.map(i => `- ${i.product.name} x ${i.qty}: ${fmtPrice(i.product.price * i.qty)}`).join('\n');
+    const message = [
+      'Hello Ashvi, I would like to place an order.',
+      '',
+      `Name: ${checkoutInfo.name}`,
+      `Mobile: ${checkoutInfo.mobile}`,
+      `Address: ${checkoutInfo.address}`,
+      '',
+      'Order:',
+      orderLines,
+      '',
+      `Subtotal: ${fmtPrice(subtotal)}`,
+      `Shipping: ${shipping === 0 ? 'Complimentary' : fmtPrice(shipping)}`,
+      `Estimated total: ${fmtPrice(total)}`
+    ].join('\n');
+    const number = (window.ASHVI_WHATSAPP_NUMBER || '').replace(/\D/g, '');
+    const base = number ? `https://wa.me/${number}` : 'https://api.whatsapp.com/send';
+    window.open(`${base}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -385,7 +410,40 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
                   <span>Estimated total</span>
                   <strong>{fmtPrice(total)}</strong>
                 </div>
-                <button className="btn cart-checkout-btn">Checkout</button>
+                <form className="checkout-form" onSubmit={openWhatsAppOrder}>
+                  <label className="checkout-field">
+                    <span>Name</span>
+                    <input
+                      type="text"
+                      value={checkoutInfo.name}
+                      onChange={(e) => setCheckoutField('name', e.target.value)}
+                      placeholder="Your full name"
+                      required
+                    />
+                  </label>
+                  <label className="checkout-field">
+                    <span>Mobile number</span>
+                    <input
+                      type="tel"
+                      inputMode="tel"
+                      value={checkoutInfo.mobile}
+                      onChange={(e) => setCheckoutField('mobile', e.target.value)}
+                      placeholder="+91 98765 43210"
+                      required
+                    />
+                  </label>
+                  <label className="checkout-field">
+                    <span>Address</span>
+                    <textarea
+                      rows="4"
+                      value={checkoutInfo.address}
+                      onChange={(e) => setCheckoutField('address', e.target.value)}
+                      placeholder="House number, street, city, pincode"
+                      required
+                    />
+                  </label>
+                  <button className="btn cart-checkout-btn" type="submit">Order on WhatsApp</button>
+                </form>
                 <p>Tax included. Shipping and discounts calculated at checkout.</p>
               </aside>
             </div>
