@@ -103,7 +103,7 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
           <button className="mobile-menu-action" onClick={() => { setMenuOpen(false); openSearch(); }}>
             <Icon name="search" size={16} /><span>Search</span>
           </button>
-          <button className="mobile-menu-action" onClick={() => { setMenuOpen(false); openCart(); }}>
+          <button className="mobile-menu-action" onClick={() => { setMenuOpen(false); navigate({ page: 'cart' }); }}>
             <Icon name="bag" size={16} /><span>Cart {cartCount > 0 ? `(${cartCount})` : ''}</span>
           </button>
         </div>
@@ -136,7 +136,7 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
             <button className="nav-icon nav-icon-account" aria-label="Account">
               <Icon name="user" size={18} />
             </button>
-            <button className="nav-icon nav-icon-cart" onClick={openCart} aria-label="Cart">
+            <button className="nav-icon nav-icon-cart" onClick={() => navigate({ page: 'cart' })} aria-label="Cart">
               <Icon name="bag" size={18} />
               {cartCount > 0 && <span className="nav-cart-count">{cartCount}</span>}
             </button>

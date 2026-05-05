@@ -313,6 +313,109 @@ const CategoryPage = ({ categoryId, navigate, addToCart, products, categories })
 
 };
 
+// ----- CART -----
+const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }) => {
+  const items = cart.map(c => ({ ...c, product: products.find(p => p.id === c.id) })).filter(i => i.product);
+  const subtotal = items.reduce((s, i) => s + i.product.price * i.qty, 0);
+  const shipping = subtotal > 1499 || subtotal === 0 ? 0 : 89;
+  const total = subtotal + shipping;
+  const recent = products.filter(p => !items.some(i => i.id === p.id)).slice(0, 3);
+
+  return (
+    <div className="page cart-page">
+      <section className="cart-shell">
+        <div className="container-tight">
+          <div className="cart-breadcrumb">
+            <a onClick={() => navigate({ page: 'home' })}>Home</a>
+            <span>/</span>
+            <span>Cart</span>
+          </div>
+          <h1 className="cart-title">Your Cart</h1>
+
+          {items.length === 0 ? (
+            <div className="cart-empty-page">
+              <span className="quote-mark">"</span>
+              <h2>Your cart is quiet.</h2>
+              <p>Begin with something hand poured, then return here for a considered checkout.</p>
+              <button className="btn" onClick={() => navigate({ page: 'category', categoryId: 'signature' })}>
+                <span>Shop Signature</span><Icon name="arrow" size={14} />
+              </button>
+            </div>
+          ) : (
+            <div className="cart-layout-page">
+              <div className="cart-list-page">
+                {items.map(i => (
+                  <article className="cart-line-page" key={i.id}>
+                    <button className="cart-line-remove" onClick={() => removeItem(i.id)} aria-label={`Remove ${i.product.name}`}>
+                      <Icon name="close" size={18} />
+                    </button>
+                    <div className="cart-line-media" onClick={() => navigate({ page: 'product', productId: i.id })}>
+                      {i.product.image
+                        ? <img src={i.product.image} alt={i.product.name} />
+                        : <Placeholder tone="cream" label={i.product.name.split(' ')[0]} />}
+                    </div>
+                    <div className="cart-line-copy">
+                      <h2 onClick={() => navigate({ page: 'product', productId: i.id })}>{i.product.name}</h2>
+                      <p>{i.product.size || i.product.categoryName} x {i.qty}</p>
+                      <div className="cart-line-qty" aria-label={`Quantity for ${i.product.name}`}>
+                        <button onClick={() => updateQty(i.id, i.qty - 1)} aria-label="Decrease quantity">
+                          <Icon name="minus" size={13} />
+                        </button>
+                        <span>{i.qty}</span>
+                        <button onClick={() => updateQty(i.id, i.qty + 1)} aria-label="Increase quantity">
+                          <Icon name="plus" size={13} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="cart-line-price">{fmtPrice(i.product.price * i.qty)}</div>
+                  </article>
+                ))}
+              </div>
+
+              <aside className="cart-summary-page">
+                <div className="cart-summary-row">
+                  <span>Estimated total</span>
+                  <strong>{fmtPrice(total)}</strong>
+                </div>
+                <button className="btn cart-checkout-btn">Checkout</button>
+                <p>Tax included. Shipping and discounts calculated at checkout.</p>
+              </aside>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="cart-recent-section">
+        <div className="container-tight">
+          <h2 className="cart-recent-title">Recently Viewed Products</h2>
+          <div className="cart-recent-grid">
+            {recent.map(p => (
+              <article className="cart-recent-card" key={p.id} onClick={() => navigate({ page: 'product', productId: p.id })}>
+                <div className="cart-recent-media">
+                  {p.image
+                    ? <img src={p.image} alt={p.name} />
+                    : <Placeholder tone="cream" label={p.name.split(' ')[0]} />}
+                </div>
+                <div className="cart-recent-copy">
+                  <h3>{p.name}</h3>
+                  <p>{p.categoryName}</p>
+                  <span>{p.size || p.burn || 'Hand poured'}</span>
+                </div>
+                <div className="cart-recent-price">
+                  <strong>{fmtPrice(p.price)}</strong>
+                  {p.mrp && <small>M.R.P: {fmtPrice(p.mrp)}</small>}
+                  {p.mrp && <em>{Math.round((1 - p.price / p.mrp) * 100)}% OFF</em>}
+                </div>
+                <button className="cart-add-btn" onClick={(e) => { e.stopPropagation(); addToCart(p.id); }}>Add to Cart</button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
 // ----- PRODUCT DETAIL -----
 const ProductPage = ({ productId, navigate, addToCart, products }) => {
   const base = products.find((x) => x.id === productId) || products.find((x) => x.slug === productId) || products[0];
@@ -586,4 +689,4 @@ const PrivacyPage = ({ navigate }) => (
   </div>
 );
 
-Object.assign(window, { HomePage, CategoryPage, ProductPage, AboutPage, PrivacyPage });
+Object.assign(window, { HomePage, CategoryPage, CartPage, ProductPage, AboutPage, PrivacyPage });
