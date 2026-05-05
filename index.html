@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ashvi, Flavours of Elegance</title>
-  <link rel="stylesheet" href="styles.css?v=20" />
+  <link rel="stylesheet" href="styles.css?v=21" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%234F3E35'/%3E%3Ctext x='16' y='22' font-family='Playfair Display' font-size='18' fill='%23EAE0D5' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
@@ -19,7 +19,7 @@
   <script src="data.js?v=14"></script>
   <script type="text/babel" src="tweaks-panel.jsx?v=14"></script>
   <script type="text/babel" src="components.jsx?v=16"></script>
-  <script type="text/babel" src="pages.jsx?v=19"></script>
+  <script type="text/babel" src="pages.jsx?v=20"></script>
 
   <script type="text/babel">
     const { useState, useEffect, useMemo } = React;
@@ -44,7 +44,7 @@
         .filter(i => !(i.isMain || i.is_main) && i.url && i.url !== mainImg)
         .map(i => i.url);
       return {
-        id: p.slug,
+        id: p.slug || p.id,
         name: p.name,
         tagline: p.tagline,
         description: p.description || '',
@@ -110,13 +110,13 @@
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
 
-      const addToCart = (id, qty = 1) => {
+      const addToCart = (id, qty = 1, options = {}) => {
         setCart(c => {
           const existing = c.find(x => x.id === id);
           if (existing) return c.map(x => x.id === id ? { ...x, qty: x.qty + qty } : x);
           return [...c, { id, qty }];
         });
-        setCartOpen(true);
+        if (options.openDrawer !== false) setCartOpen(true);
       };
       const updateQty = (id, qty) => {
         if (qty <= 0) return setCart(c => c.filter(x => x.id !== id));

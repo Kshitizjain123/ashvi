@@ -320,6 +320,10 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
   const shipping = subtotal > 1499 || subtotal === 0 ? 0 : 89;
   const total = subtotal + shipping;
   const recent = products.filter(p => !items.some(i => i.id === p.id)).slice(0, 3);
+  const addFromCheckout = (id) => {
+    addToCart(id, 1, { openDrawer: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="page cart-page">
@@ -394,7 +398,7 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
           <h2 className="cart-recent-title">Recently viewed <em>products.</em></h2>
           <div className="product-grid three cart-recent-products">
             {recent.map(p => (
-              <ProductCard key={p.id} product={p} navigate={navigate} addToCart={addToCart} />
+              <ProductCard key={p.id} product={p} navigate={navigate} addToCart={addFromCheckout} />
             ))}
           </div>
         </div>
