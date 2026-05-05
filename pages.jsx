@@ -328,9 +328,16 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
   const setCheckoutField = (field, value) => {
     setCheckoutInfo(info => ({ ...info, [field]: value }));
   };
-  const openWhatsAppOrder = (e) => {
+  const openWhatsAppOrder = async (e) => {
     e.preventDefault();
-    const orderLines = items.map(i => `- ${i.product.name} x ${i.qty}: ${fmtPrice(i.product.price * i.qty)}`).join('\n');
+    const leadItems = items.map(i => ({
+      product_id: i.product.id,
+      product_name: i.product.name,
+      quantity: i.qty,
+      unit_price: i.product.price,
+      total_price: i.product.price * i.qty
+    }));
+    const orderLines = leadItems.map(i => `- ${i.product_name} x ${i.quantity}: ${fmtPrice(i.total_price)}`).join('\n');
     const message = [
       'Hello Ashvi, I would like to place an order.',
       '',
@@ -345,6 +352,24 @@ const CartPage = ({ navigate, cart, products, updateQty, removeItem, addToCart }
       `Shipping: ${shipping === 0 ? 'Complimentary' : fmtPrice(shipping)}`,
       `Estimated total: ${fmtPrice(total)}`
     ].join('\n');
+    try {
+      await fetch(`${window.API_BASE}/leads/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: checkoutInfo.name,
+          mobile: checkoutInfo.mobile,
+          address: checkoutInfo.address,
+          items: leadItems,
+          subtotal,
+          shipping,
+          total,
+          message,
+        })
+      });
+    } catch (err) {
+      console.warn('Lead capture failed', err);
+    }
     const number = (window.ASHVI_WHATSAPP_NUMBER || '').replace(/\D/g, '');
     const base = number ? `https://wa.me/${number}` : 'https://api.whatsapp.com/send';
     window.open(`${base}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');

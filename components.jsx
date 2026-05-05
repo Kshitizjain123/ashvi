@@ -7,7 +7,6 @@ const fmtPrice = (n) => '₹ ' + n.toLocaleString('en-IN');
 const PHOSPHOR_MAP = {
   search:   'ph-magnifying-glass',
   bag:      'ph-shopping-bag',
-  user:     'ph-user',
   close:    'ph-x',
   arrow:    'ph-arrow-right',
   arrowSm:  'ph-arrow-right',
@@ -132,9 +131,6 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
           <div className="nav-actions">
             <button className="nav-icon nav-icon-search" onClick={openSearch} aria-label="Search">
               <Icon name="search" size={18} />
-            </button>
-            <button className="nav-icon nav-icon-account" aria-label="Account">
-              <Icon name="user" size={18} />
             </button>
             <button className="nav-icon nav-icon-cart" onClick={() => navigate({ page: 'checkout' })} aria-label="Cart">
               <Icon name="bag" size={18} />

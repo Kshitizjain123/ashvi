@@ -288,7 +288,7 @@
           <div class="card">
             <div class="card-header"><h3>Users</h3></div>
             <table><thead><tr>
-              <th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Status</th><th>Joined</th>
+              <th>Name</th><th>Contact</th><th>Phone</th><th>Orders</th><th>Status</th><th>Joined</th>
             </tr></thead>
             <tbody id="users-tbody"></tbody></table>
           </div>
@@ -659,6 +659,10 @@
     location.reload()
   }
 
+  function esc(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]))
+  }
+
   const titles = { dashboard: 'Dashboard', orders: 'Orders', products: 'Products', users: 'Users', reviews: 'Reviews', coupons: 'Coupons', categories: 'Categories', ticker: 'Ticker' }
 
   function showSection(name) {
@@ -780,11 +784,11 @@
     if (!data.success) { document.getElementById('users-tbody').innerHTML = `<tr><td colspan="6" class="loading" style="color:#c0392b">${data.error?.message || 'Failed to load'}</td></tr>`; return }
     document.getElementById('users-tbody').innerHTML = data.users.map(u => `
       <tr>
-        <td>${u.full_name}</td>
-        <td style="font-family:sans-serif;font-size:13px">${u.email}</td>
-        <td style="font-family:sans-serif;font-size:13px">${u.phone||'—'}</td>
+        <td>${esc(u.full_name)}</td>
+        <td style="font-family:sans-serif;font-size:13px">${esc(u.record_type === 'lead' ? u.address : u.email)}</td>
+        <td style="font-family:sans-serif;font-size:13px">${esc(u.phone||'—')}</td>
         <td style="font-family:sans-serif">${u.order_count}</td>
-        <td><span class="badge ${u.is_active ? 'badge-delivered' : 'badge-cancelled'}">${u.is_active ? 'Active' : 'Disabled'}</span></td>
+        <td><span class="badge ${u.record_type === 'lead' ? 'badge-pending' : (u.is_active ? 'badge-delivered' : 'badge-cancelled')}">${u.record_type === 'lead' ? 'Order initiated' : (u.is_active ? 'Active' : 'Disabled')}</span></td>
         <td style="font-family:sans-serif;font-size:12px">${new Date(u.created_at).toLocaleDateString('en-IN')}</td>
       </tr>`).join('') || '<tr><td colspan="6" class="loading">No users yet</td></tr>'
   }

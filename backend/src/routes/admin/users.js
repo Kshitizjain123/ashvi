@@ -15,20 +15,35 @@ router.get('/', async (req, res, next) => {
     let i = 1
 
     if (search) {
-      conditions.push(`(u.email ILIKE $${i} OR u.full_name ILIKE $${i + 1})`)
-      params.push(`%${search}%`, `%${search}%`)
-      i += 2
+      conditions.push(`(full_name ILIKE $${i} OR COALESCE(email,'') ILIKE $${i} OR COALESCE(phone,'') ILIKE $${i} OR COALESCE(address,'') ILIKE $${i})`)
+      params.push(`%${search}%`)
+      i += 1
     }
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
     const { rows } = await db.query(`
-      SELECT u.id, u.full_name, u.email, u.phone, u.is_active, u.is_verified, u.created_at,
-             COUNT(o.id) AS order_count
-      FROM users u
-      LEFT JOIN orders o ON o.user_id = u.id
+      WITH account_users AS (
+        SELECT u.id::text, u.full_name, u.email, u.phone, NULL::text AS address,
+               u.is_active, u.is_verified, u.created_at, COUNT(o.id)::int AS order_count,
+               'account' AS record_type, NULL::text AS lead_status, NULL::numeric AS lead_total
+        FROM users u
+        LEFT JOIN orders o ON o.user_id = u.id
+        GROUP BY u.id
+      ),
+      checkout_leads_list AS (
+        SELECT l.id::text, l.full_name, NULL::text AS email, l.phone, l.address,
+               true AS is_active, false AS is_verified, l.created_at, 0::int AS order_count,
+               'lead' AS record_type, l.status AS lead_status, l.total_amount AS lead_total
+        FROM checkout_leads l
+      )
+      SELECT *
+      FROM (
+        SELECT * FROM account_users
+        UNION ALL
+        SELECT * FROM checkout_leads_list
+      ) records
       ${where}
-      GROUP BY u.id
-      ORDER BY u.created_at DESC
+      ORDER BY created_at DESC
       LIMIT $${i++} OFFSET $${i++}
     `, [...params, parseInt(limit), offset])
     res.json({ success: true, users: rows })

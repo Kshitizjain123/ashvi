@@ -227,6 +227,23 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- CHECKOUT LEADS
+CREATE TABLE IF NOT EXISTS checkout_leads (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name        VARCHAR(100) NOT NULL,
+  phone            VARCHAR(20) NOT NULL UNIQUE,
+  address          TEXT NOT NULL,
+  status           VARCHAR(50) NOT NULL DEFAULT 'order_initiated',
+  items            JSONB NOT NULL DEFAULT '[]'::jsonb,
+  subtotal         NUMERIC(10,2) DEFAULT 0,
+  shipping_amount  NUMERIC(10,2) DEFAULT 0,
+  total_amount     NUMERIC(10,2) DEFAULT 0,
+  whatsapp_message TEXT,
+  source           VARCHAR(50) DEFAULT 'checkout_whatsapp',
+  created_at       TIMESTAMPTZ DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- TICKER MESSAGES
 CREATE TABLE IF NOT EXISTS ticker_messages (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -260,6 +277,8 @@ CREATE INDEX IF NOT EXISTS idx_products_bestseller ON products(is_bestseller) WH
 CREATE INDEX IF NOT EXISTS idx_cart_user           ON cart_items(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_user         ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status       ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_checkout_leads_status ON checkout_leads(status);
+CREATE INDEX IF NOT EXISTS idx_checkout_leads_created ON checkout_leads(created_at DESC);
 
 -- SEED DATA (ON CONFLICT DO NOTHING so re-runs are safe)
 INSERT INTO admins (id, full_name, email, password_hash, role)

@@ -17,6 +17,7 @@ const cartRoutes = require('./src/routes/cart')
 const orderRoutes = require('./src/routes/orders')
 const paymentRoutes = require('./src/routes/payments')
 const cmsRoutes = require('./src/routes/cms')
+const leadRoutes = require('./src/routes/leads')
 
 // Admin Routes
 const adminAuthRoutes = require('./src/routes/admin/auth')
@@ -62,6 +63,25 @@ const app = express()
         'Meera K.', 'Delhi', 'The Diwali diya candle was the most photographed thing on our table this year. The sculpted rose looks unreal in person.',
       ])
     }
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS checkout_leads (
+        id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        full_name        VARCHAR(100) NOT NULL,
+        phone            VARCHAR(20) NOT NULL UNIQUE,
+        address          TEXT NOT NULL,
+        status           VARCHAR(50) NOT NULL DEFAULT 'order_initiated',
+        items            JSONB NOT NULL DEFAULT '[]'::jsonb,
+        subtotal         NUMERIC(10,2) DEFAULT 0,
+        shipping_amount  NUMERIC(10,2) DEFAULT 0,
+        total_amount     NUMERIC(10,2) DEFAULT 0,
+        whatsapp_message TEXT,
+        source           VARCHAR(50) DEFAULT 'checkout_whatsapp',
+        created_at       TIMESTAMPTZ DEFAULT NOW(),
+        updated_at       TIMESTAMPTZ DEFAULT NOW()
+      )
+    `)
+    await db.query('CREATE INDEX IF NOT EXISTS idx_checkout_leads_status ON checkout_leads(status)')
+    await db.query('CREATE INDEX IF NOT EXISTS idx_checkout_leads_created ON checkout_leads(created_at DESC)')
     console.log('Startup migrations OK')
   } catch (err) {
     console.error('Startup migration error:', err.message)
@@ -75,6 +95,7 @@ app.use(cors({
     'https://ashviflavoursofelegance.com',
     'https://www.ashviflavoursofelegance.com',
     'http://localhost:8080',
+    'http://localhost:8081',
     'http://localhost:5173',
   ].filter(Boolean),
   credentials: true,
@@ -97,6 +118,7 @@ app.use('/v1/categories', categoryRoutes)
 app.use('/v1/products', productRoutes)
 app.use('/v1/cms', cmsRoutes)
 app.use('/v1/payments', paymentRoutes)
+app.use('/v1/leads', leadRoutes)
 
 // Authenticated user routes
 app.use('/v1/users', userRoutes)
