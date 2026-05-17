@@ -71,10 +71,32 @@ const Ticker = ({ items }) => {
 // ----- Navbar -----
 const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart, openSearch, categories }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState(null);
+  const [isCompactNav, setIsCompactNav] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 1100px)').matches : false
+  );
+  const inlineCategories = categories.slice(0, 3);
+  const overflowCategories = categories.slice(3);
+  const drawerCategories = !isCompactNav && overflowCategories.length ? overflowCategories : categories;
   const isCategoryActive = (category) =>
     currentPage === 'category' && (currentCategoryId === category.id || (category.subcategories || []).some((sub) => sub.id === currentCategoryId));
+  const navigateFromMenu = (next) => {
+    setMenuOpen(false);
+    navigate(next);
+  };
   // Close drawer on route change
   useEffect(() => { setMenuOpen(false); }, [currentPage, currentCategoryId]);
+  useEffect(() => {
+    const activeParent = categories.find((category) => isCategoryActive(category));
+    setExpandedMobileCategory(activeParent ? activeParent.id : null);
+  }, [categories, currentPage, currentCategoryId]);
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 1100px)');
+    const syncNavMode = () => setIsCompactNav(media.matches);
+    syncNavMode();
+    media.addEventListener('change', syncNavMode);
+    return () => media.removeEventListener('change', syncNavMode);
+  }, []);
   // Lock body scroll when open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -86,22 +108,38 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
       <div className={'mobile-menu-scrim' + (menuOpen ? ' open' : '')} onClick={() => setMenuOpen(false)}></div>
       <aside className={'mobile-menu' + (menuOpen ? ' open' : '')} aria-hidden={!menuOpen}>
         <div className="mobile-menu-head">
-          <span className="mobile-menu-eyebrow">Menu</span>
+          <span className="mobile-menu-eyebrow">{!isCompactNav && overflowCategories.length ? 'More categories' : 'Menu'}</span>
           <button className="nav-icon" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
             <Icon name="close" size={18} />
           </button>
         </div>
         <nav className="mobile-menu-links">
-          <a className={'mobile-menu-link' + (currentPage === 'home' ? ' active' : '')} onClick={() => navigate({ page: 'home' })}>Home</a>
-          {categories.map(c => (
+          {isCompactNav && <a className={'mobile-menu-link' + (currentPage === 'home' ? ' active' : '')} onClick={() => navigateFromMenu({ page: 'home' })}>Home</a>}
+          {drawerCategories.map(c => (
             <div key={c.id}>
-              <a className={'mobile-menu-link' + (isCategoryActive(c) ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
-                {c.name}
-              </a>
+              {(c.subcategories || []).length > 0 ? (
+                <div className={'mobile-menu-parent' + (isCategoryActive(c) ? ' active' : '')}>
+                  <a className="mobile-menu-link" onClick={() => navigateFromMenu({ page: 'category', categoryId: c.id })}>
+                    {c.name}
+                  </a>
+                  <button
+                    className="mobile-menu-toggle"
+                    aria-label={`Show ${c.name} categories`}
+                    aria-expanded={expandedMobileCategory === c.id}
+                    onClick={() => setExpandedMobileCategory(expandedMobileCategory === c.id ? null : c.id)}
+                  >
+                    <Icon name="chevron" size={14} />
+                  </button>
+                </div>
+              ) : (
+                <a className={'mobile-menu-link' + (isCategoryActive(c) ? ' active' : '')} onClick={() => navigateFromMenu({ page: 'category', categoryId: c.id })}>
+                  {c.name}
+                </a>
+              )}
               {(c.subcategories || []).length > 0 && (
-                <div className="mobile-submenu">
+                <div className={'mobile-submenu' + (expandedMobileCategory === c.id || isCategoryActive(c) ? ' open' : '')}>
                   {c.subcategories.map((sub) => (
-                    <a key={sub.id} className={'mobile-menu-link mobile-submenu-link' + (currentPage === 'category' && currentCategoryId === sub.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: sub.id })}>
+                    <a key={sub.id} className={'mobile-menu-link mobile-submenu-link' + (currentPage === 'category' && currentCategoryId === sub.id ? ' active' : '')} onClick={() => navigateFromMenu({ page: 'category', categoryId: sub.id })}>
                       {sub.name}
                     </a>
                   ))}
@@ -109,7 +147,7 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
               )}
             </div>
           ))}
-          <a className={'mobile-menu-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
+          {isCompactNav && <a className={'mobile-menu-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigateFromMenu({ page: 'about' })}>About</a>}
         </nav>
         <div className="mobile-menu-foot">
           <button className="mobile-menu-action" onClick={() => { setMenuOpen(false); openSearch(); }}>
@@ -129,33 +167,35 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
     <>
       <header className="nav">
         <div className="nav-inner">
-          <button className="nav-hamburger" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
-            <span></span><span></span><span></span>
-          </button>
-          <nav className="nav-links">
-            <a className={'nav-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
-            {categories.map(c => (
-              (c.subcategories || []).length > 0 ? (
-                <div key={c.id} className="nav-dropdown">
-                  <a className={'nav-link nav-dropdown-trigger' + (isCategoryActive(c) ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
-                    {c.name}
-                    <Icon name="chevron" size={12} />
-                  </a>
-                  <div className="nav-dropdown-menu">
-                    {c.subcategories.map((sub) => (
-                      <a key={sub.id} className={'nav-dropdown-item' + (currentPage === 'category' && currentCategoryId === sub.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: sub.id })}>
-                        {sub.name}
-                      </a>
-                    ))}
+          <div className="nav-left">
+            <nav className="nav-links">
+              <a className={'nav-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
+              {inlineCategories.map(c => (
+                (c.subcategories || []).length > 0 ? (
+                  <div key={c.id} className="nav-dropdown">
+                    <a className={'nav-link nav-dropdown-trigger' + (isCategoryActive(c) ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+                      {c.name}
+                      <Icon name="chevron" size={12} />
+                    </a>
+                    <div className="nav-dropdown-menu">
+                      {c.subcategories.map((sub) => (
+                        <a key={sub.id} className={'nav-dropdown-item' + (currentPage === 'category' && currentCategoryId === sub.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: sub.id })}>
+                          {sub.name}
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <a key={c.id} className={'nav-link' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
-                  {c.name}
-                </a>
-              )
-            ))}
-          </nav>
+                ) : (
+                  <a key={c.id} className={'nav-link' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+                    {c.name}
+                  </a>
+                )
+              ))}
+            </nav>
+            <button className={'nav-hamburger' + (overflowCategories.length ? ' nav-hamburger-overflow' : '')} aria-label="Open menu" onClick={() => setMenuOpen(true)}>
+              <span></span><span></span><span></span>
+            </button>
+          </div>
           <Logo onClick={() => navigate({ page: 'home' })} />
           <div className="nav-actions">
             <button className="nav-icon nav-icon-search" onClick={openSearch} aria-label="Search">
