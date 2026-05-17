@@ -15,7 +15,45 @@ const CATEGORIES = [
     tag: 'Seasonal',
     blurb: 'Diwali diyas, Holi pastels, Christmas bubble cubes, small editions made for the moments that matter.',
     long: 'Limited seasonal pieces poured in small batches. Diwali rose diyas, Holi heart sets, Christmas bubble cubes, each retired when the season passes.',
-    image: 'assets/p-diwali-rose.jpeg'
+    image: 'assets/p-diwali-rose.jpeg',
+    subcategories: [
+      {
+        id: 'diwali',
+        name: 'Diwali',
+        tag: 'Lights',
+        blurb: 'Rose diyas and warm ritual candles for the festival of lights.',
+        long: 'Hand poured diyas and rose candles for Diwali tables, pooja corners and festive gifting.',
+        image: 'assets/p-rose-diyas-batch.jpeg',
+        parentId: 'festive'
+      },
+      {
+        id: 'holi',
+        name: 'Holi',
+        tag: 'Colour',
+        blurb: 'Pastel hearts and joyful small-batch candles for colour-filled celebrations.',
+        long: 'Soft pastel festive candles for Holi gifting, made in small runs with sculpted floral details.',
+        image: 'assets/p-heart-roses.jpeg',
+        parentId: 'festive'
+      },
+      {
+        id: 'christmas',
+        name: 'Christmas',
+        tag: 'Warmth',
+        blurb: 'Cinnamon, ruby accents and cozy seasonal pours for winter gifting.',
+        long: 'Warm spice-led candles and festive keepsakes for Christmas tables, hampers and winter evenings.',
+        image: 'assets/p-collection.jpeg',
+        parentId: 'festive'
+      },
+      {
+        id: 'valentine',
+        name: "Valentine's",
+        tag: 'Romance',
+        blurb: 'Heart-topped candles and rose-led pours for sentimental gifting.',
+        long: 'Rose, ruby and heart-shaped candles made for Valentine gifting, anniversaries and small romantic gestures.',
+        image: 'assets/p-valentine-jar.jpeg',
+        parentId: 'festive'
+      }
+    ]
   },
   {
     id: 'gifting',

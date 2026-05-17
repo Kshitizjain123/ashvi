@@ -71,6 +71,8 @@ const Ticker = ({ items }) => {
 // ----- Navbar -----
 const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart, openSearch, categories }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const isCategoryActive = (category) =>
+    currentPage === 'category' && (currentCategoryId === category.id || (category.subcategories || []).some((sub) => sub.id === currentCategoryId));
   // Close drawer on route change
   useEffect(() => { setMenuOpen(false); }, [currentPage, currentCategoryId]);
   // Lock body scroll when open
@@ -92,9 +94,20 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
         <nav className="mobile-menu-links">
           <a className={'mobile-menu-link' + (currentPage === 'home' ? ' active' : '')} onClick={() => navigate({ page: 'home' })}>Home</a>
           {categories.map(c => (
-            <a key={c.id} className={'mobile-menu-link' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
-              {c.name}
-            </a>
+            <div key={c.id}>
+              <a className={'mobile-menu-link' + (isCategoryActive(c) ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+                {c.name}
+              </a>
+              {(c.subcategories || []).length > 0 && (
+                <div className="mobile-submenu">
+                  {c.subcategories.map((sub) => (
+                    <a key={sub.id} className={'mobile-menu-link mobile-submenu-link' + (currentPage === 'category' && currentCategoryId === sub.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: sub.id })}>
+                      {sub.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
           <a className={'mobile-menu-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
         </nav>
@@ -122,9 +135,25 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
           <nav className="nav-links">
             <a className={'nav-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
             {categories.map(c => (
-              <a key={c.id} className={'nav-link' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
-                {c.name}
-              </a>
+              (c.subcategories || []).length > 0 ? (
+                <div key={c.id} className="nav-dropdown">
+                  <a className={'nav-link nav-dropdown-trigger' + (isCategoryActive(c) ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+                    {c.name}
+                    <Icon name="chevron" size={12} />
+                  </a>
+                  <div className="nav-dropdown-menu">
+                    {c.subcategories.map((sub) => (
+                      <a key={sub.id} className={'nav-dropdown-item' + (currentPage === 'category' && currentCategoryId === sub.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: sub.id })}>
+                        {sub.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <a key={c.id} className={'nav-link' + (currentPage === 'category' && currentCategoryId === c.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+                  {c.name}
+                </a>
+              )
             ))}
           </nav>
           <Logo onClick={() => navigate({ page: 'home' })} />

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ashvi, Flavours of Elegance</title>
-  <link rel="stylesheet" href="styles.css?v=23" />
+  <link rel="stylesheet" href="styles.css?v=24" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%234F3E35'/%3E%3Ctext x='16' y='22' font-family='Playfair Display' font-size='18' fill='%23EAE0D5' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
@@ -16,10 +16,10 @@
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-  <script src="data.js?v=14"></script>
+  <script src="data.js?v=15"></script>
   <script type="text/babel" src="tweaks-panel.jsx?v=14"></script>
-  <script type="text/babel" src="components.jsx?v=17"></script>
-  <script type="text/babel" src="pages.jsx?v=23"></script>
+  <script type="text/babel" src="components.jsx?v=18"></script>
+  <script type="text/babel" src="pages.jsx?v=24"></script>
 
   <script type="text/babel">
     const { useState, useEffect, useMemo } = React;
@@ -36,10 +36,20 @@
       ? 'http://localhost:3002/v1'
       : 'https://api-production-377b.up.railway.app/v1';
 
+    window.getProductFestivalSlug = function getProductFestivalSlug(p) {
+      const text = [p.slug, p.id, p.name, p.tagline, p.description].filter(Boolean).join(' ').toLowerCase();
+      if (text.includes('diwali') || text.includes('diya')) return 'diwali';
+      if (text.includes('holi')) return 'holi';
+      if (text.includes('christmas') || text.includes('cinnamon')) return 'christmas';
+      if (text.includes('valentine') || text.includes('heart')) return 'valentine';
+      return '';
+    }
+
     window.normalizeProduct = function normalizeProduct(p) {
       const allImages = p.images || [];
       const mainImgObj = allImages.find(i => i.isMain || i.is_main) || allImages[0];
       const mainImg = p.imgSrc || (mainImgObj && mainImgObj.url) || '';
+      const categorySlug = p.categorySlug || (p.category && p.category.slug) || p.category || '';
       const gallery = allImages
         .filter(i => !(i.isMain || i.is_main) && i.url && i.url !== mainImg)
         .map(i => i.url);
@@ -61,8 +71,9 @@
         ingredients: p.ingredients
           ? p.ingredients.map(i => ({ name: i.name, desc: i.description || i.desc || '' }))
           : undefined,
-        category: p.categorySlug || (p.category && p.category.slug) || '',
+        category: categorySlug,
         categoryName: p.categoryName || (p.category && p.category.name) || '',
+        festival: p.festival || (['diwali', 'holi', 'christmas', 'valentine'].includes(categorySlug) ? categorySlug : (categorySlug === 'festive' ? window.getProductFestivalSlug(p) : '')),
         in_stock: p.in_stock !== false,
       };
     }

@@ -1,6 +1,12 @@
 // ===== Ashvi pages =====
 const { useState: useState2, useEffect: useEffect2, useMemo: useMemo2 } = React;
 
+const flattenCategories = (categories) =>
+  categories.flatMap((category) => [category, ...(category.subcategories || [])]);
+
+const findCategoryById = (categories, categoryId) =>
+  flattenCategories(categories).find((category) => category.id === categoryId);
+
 // ----- HOME -----
 const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
   const featured = products.filter((p) => p.badge === 'Bestseller' || p.badge === 'New').slice(0, 4);
@@ -202,8 +208,14 @@ const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
 
 // ----- CATEGORY -----
 const CategoryPage = ({ categoryId, navigate, addToCart, products, categories }) => {
-  const cat = categories.find((c) => c.id === categoryId) || categories[0];
-  const all = products.filter((p) => p.category === cat.id);
+  const cat = findCategoryById(categories, categoryId) || categories[0];
+  const parentCat = cat.parentId ? categories.find((c) => c.id === cat.parentId) : null;
+  const childIds = (cat.subcategories || []).map((sub) => sub.id);
+  const all = products.filter((p) => {
+    if (cat.parentId) return p.category === cat.id || (p.category === cat.parentId && p.festival === cat.id);
+    if (childIds.length) return p.category === cat.id || childIds.includes(p.category) || childIds.includes(p.festival);
+    return p.category === cat.id;
+  });
   const [sortOpen, setSortOpen] = useState2(false);
   const [sort, setSort] = useState2('Featured');
   const [filters, setFilters] = useState2({ price: [], tag: [] });
@@ -246,7 +258,15 @@ const CategoryPage = ({ categoryId, navigate, addToCart, products, categories })
       <section className="category-hero">
         <div className="container">
           <div className="breadcrumb">
-            <a onClick={() => navigate({ page: 'home' })} style={{ cursor: 'pointer' }}>Home</a> <span style={{ margin: '0 12px', color: 'var(--gold)' }}>/</span> {cat.name}
+            <a onClick={() => navigate({ page: 'home' })} style={{ cursor: 'pointer' }}>Home</a>
+            <span style={{ margin: '0 12px', color: 'var(--gold)' }}>/</span>
+            {parentCat && (
+              <>
+                <a onClick={() => navigate({ page: 'category', categoryId: parentCat.id })} style={{ cursor: 'pointer' }}>{parentCat.name}</a>
+                <span style={{ margin: '0 12px', color: 'var(--gold)' }}>/</span>
+              </>
+            )}
+            {cat.name}
           </div>
           <h1>{cat.name}</h1>
           <p>{cat.long}</p>

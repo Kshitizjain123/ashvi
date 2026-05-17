@@ -296,6 +296,21 @@ INSERT INTO categories (id, name, slug, sort_order, description) VALUES
   (gen_random_uuid(), 'Gift Sets', 'gifting',   3, 'Considered pairings, presented in our signature white and ribbon boxes.')
 ON CONFLICT (slug) DO NOTHING;
 
+INSERT INTO categories (id, name, slug, parent_id, sort_order, description)
+SELECT gen_random_uuid(), child.name, child.slug, parent.id, child.sort_order, child.description
+FROM categories parent
+CROSS JOIN (VALUES
+  ('Diwali', 'diwali', 1, 'Rose diyas and warm ritual candles for the festival of lights.'),
+  ('Holi', 'holi', 2, 'Pastel hearts and joyful small-batch candles for colour-filled celebrations.'),
+  ('Christmas', 'christmas', 3, 'Cinnamon, ruby accents and cozy seasonal pours for winter gifting.'),
+  ('Valentine''s', 'valentine', 4, 'Heart-topped candles and rose-led pours for sentimental gifting.')
+) AS child(name, slug, sort_order, description)
+WHERE parent.slug = 'festive'
+ON CONFLICT (slug) DO UPDATE SET
+  parent_id = EXCLUDED.parent_id,
+  sort_order = EXCLUDED.sort_order,
+  description = EXCLUDED.description;
+
 INSERT INTO ticker_messages (id, message, sort_order) VALUES
   (gen_random_uuid(), 'Free shipping on orders above ₹1,499',       1),
   (gen_random_uuid(), 'Hand poured in small batches, in Jaipur',     2),

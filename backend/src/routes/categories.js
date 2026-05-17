@@ -5,9 +5,21 @@ const db = require('../config/db')
 router.get('/', async (req, res, next) => {
   try {
     const { rows } = await db.query(
-      'SELECT id, name, slug, image_url, sort_order FROM categories WHERE parent_id IS NULL AND is_active = true ORDER BY sort_order ASC'
+      `SELECT id, name, slug, parent_id, image_url, sort_order
+       FROM categories
+       WHERE is_active = true
+       ORDER BY sort_order ASC, name ASC`
     )
-    res.json({ success: true, categories: rows })
+    const byId = new Map(rows.map((row) => [row.id, { ...row, subcategories: [] }]))
+    const categories = []
+    byId.forEach((category) => {
+      if (category.parent_id && byId.has(category.parent_id)) {
+        byId.get(category.parent_id).subcategories.push(category)
+      } else {
+        categories.push(category)
+      }
+    })
+    res.json({ success: true, categories })
   } catch (err) { next(err) }
 })
 
