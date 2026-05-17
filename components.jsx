@@ -75,8 +75,8 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
   const [isCompactNav, setIsCompactNav] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia('(max-width: 1100px)').matches : false
   );
-  const inlineCategories = categories.slice(0, 3);
-  const overflowCategories = categories.slice(3);
+  const inlineCategories = categories.slice(0, 2);
+  const overflowCategories = categories.slice(2);
   const drawerCategories = !isCompactNav && overflowCategories.length ? overflowCategories : categories;
   const isCategoryActive = (category) =>
     currentPage === 'category' && (currentCategoryId === category.id || (category.subcategories || []).some((sub) => sub.id === currentCategoryId));
