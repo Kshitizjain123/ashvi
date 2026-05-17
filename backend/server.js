@@ -33,6 +33,7 @@ const adminUploadRoutes = require('./src/routes/admin/upload')
 const adminTestimonialRoutes = require('./src/routes/admin/testimonials')
 
 const db = require('./src/config/db')
+const { ensureDefaultCategories } = require('./src/lib/defaultCategories')
 
 const app = express()
 app.set('trust proxy', 1)
@@ -40,6 +41,7 @@ app.set('trust proxy', 1)
 // Run any pending inline migrations on startup
 ;(async () => {
   try {
+    await ensureDefaultCategories(db)
     await db.query(`
       CREATE TABLE IF NOT EXISTS testimonials (
         id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
