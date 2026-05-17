@@ -118,7 +118,7 @@ const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
           </div>
           <div className="cat-grid">
             {categories.map((c) =>
-            <div key={c.id} className="cat-card" onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+            <div key={c.id} className="cat-card" onClick={() => navigate({ page: 'category', categoryId: (c.subcategories || [])[0]?.id || c.id })}>
                 <img src={c.image} alt={c.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.7s cubic-bezier(0.2, 0, 0.2, 1)' }} className="cat-card-img" />
                 <div className="cat-overlay">
                   <h3>{c.name}</h3>
@@ -208,9 +208,14 @@ const HomePage = ({ navigate, addToCart, products, categories, reviews }) => {
 
 // ----- CATEGORY -----
 const CategoryPage = ({ categoryId, navigate, addToCart, products, categories }) => {
-  const cat = findCategoryById(categories, categoryId) || categories[0];
+  const cat = findCategoryById(categories, categoryId) || categories[0] || { id: '', name: '', long: '', subcategories: [] };
   const parentCat = cat.parentId ? categories.find((c) => c.id === cat.parentId) : null;
   const childIds = (cat.subcategories || []).map((sub) => sub.id);
+  useEffect2(() => {
+    if ((cat.subcategories || []).length > 0) {
+      navigate({ page: 'category', categoryId: cat.subcategories[0].id });
+    }
+  }, [cat.id]);
   const all = products.filter((p) => {
     if (cat.parentId) return p.category === cat.id || (p.category === cat.parentId && p.festival === cat.id);
     if (childIds.length) return p.category === cat.id || childIds.includes(p.category) || childIds.includes(p.festival);

@@ -285,7 +285,9 @@ img { display: block; max-width: 100%; }
 }
 .mobile-menu-link {
   display: block;
+  width: 100%;
   padding: 13px 24px;
+  text-align: left;
   font-size: 15px; font-weight: 500;
   color: var(--espresso);
   letter-spacing: 0.02em;

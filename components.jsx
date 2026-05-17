@@ -80,6 +80,9 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
   const drawerCategories = !isCompactNav && overflowCategories.length ? overflowCategories : categories;
   const isCategoryActive = (category) =>
     currentPage === 'category' && (currentCategoryId === category.id || (category.subcategories || []).some((sub) => sub.id === currentCategoryId));
+  const toggleMobileCategory = (categoryId) => {
+    setExpandedMobileCategory(expandedMobileCategory === categoryId ? null : categoryId);
+  };
   const navigateFromMenu = (next) => {
     setMenuOpen(false);
     navigate(next);
@@ -119,14 +122,14 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
             <div key={c.id}>
               {(c.subcategories || []).length > 0 ? (
                 <div className={'mobile-menu-parent' + (isCategoryActive(c) ? ' active' : '')}>
-                  <a className="mobile-menu-link" onClick={() => navigateFromMenu({ page: 'category', categoryId: c.id })}>
+                  <button className="mobile-menu-link" onClick={() => toggleMobileCategory(c.id)}>
                     {c.name}
-                  </a>
+                  </button>
                   <button
                     className="mobile-menu-toggle"
                     aria-label={`Show ${c.name} categories`}
                     aria-expanded={expandedMobileCategory === c.id}
-                    onClick={() => setExpandedMobileCategory(expandedMobileCategory === c.id ? null : c.id)}
+                    onClick={() => toggleMobileCategory(c.id)}
                   >
                     <Icon name="chevron" size={14} />
                   </button>
@@ -176,10 +179,10 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
               {inlineCategories.map(c => (
                 (c.subcategories || []).length > 0 ? (
                   <div key={c.id} className="nav-dropdown">
-                    <a className={'nav-link nav-dropdown-trigger' + (isCategoryActive(c) ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: c.id })}>
+                    <button className={'nav-link nav-dropdown-trigger' + (isCategoryActive(c) ? ' active' : '')}>
                       {c.name}
                       <Icon name="chevron" size={12} />
-                    </a>
+                    </button>
                     <div className="nav-dropdown-menu">
                       {c.subcategories.map((sub) => (
                         <a key={sub.id} className={'nav-dropdown-item' + (currentPage === 'category' && currentCategoryId === sub.id ? ' active' : '')} onClick={() => navigate({ page: 'category', categoryId: sub.id })}>
