@@ -294,7 +294,10 @@ INSERT INTO categories (id, name, slug, sort_order, description) VALUES
   (gen_random_uuid(), 'Signature', 'signature', 1, 'Sculptural rose, bouquet and bubble candles, hand poured one at a time.'),
   (gen_random_uuid(), 'Festive',   'festive',   2, 'Limited seasonal pieces poured in small batches for Diwali, Holi, Christmas and more.'),
   (gen_random_uuid(), 'Gift Sets', 'gifting',   3, 'Considered pairings, presented in our signature white and ribbon boxes.')
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+  parent_id = NULL,
+  sort_order = EXCLUDED.sort_order,
+  description = COALESCE(categories.description, EXCLUDED.description);
 
 INSERT INTO categories (id, name, slug, parent_id, sort_order, description)
 SELECT gen_random_uuid(), child.name, child.slug, parent.id, child.sort_order, child.description

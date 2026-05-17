@@ -1,9 +1,11 @@
 const router = require('express').Router()
 const db = require('../config/db')
+const { ensureDefaultCategories } = require('../lib/defaultCategories')
 
 // GET /categories
 router.get('/', async (req, res, next) => {
   try {
+    await ensureDefaultCategories(db)
     const { rows } = await db.query(
       `SELECT id, name, slug, parent_id, image_url, description, sort_order
        FROM categories
@@ -26,6 +28,7 @@ router.get('/', async (req, res, next) => {
 // GET /categories/:slug
 router.get('/:slug', async (req, res, next) => {
   try {
+    await ensureDefaultCategories(db)
     const { rows } = await db.query(
       'SELECT id, name, slug, image_url, description FROM categories WHERE slug = $1 AND is_active = true',
       [req.params.slug]

@@ -3,13 +3,24 @@ const { v4: uuidv4 } = require('uuid')
 const db = require('../../config/db')
 const { requireAdmin } = require('../../middleware/auth')
 const { AppError } = require('../../middleware/errorHandler')
+const { ensureDefaultCategories } = require('../../lib/defaultCategories')
 
 router.use(requireAdmin)
 
 // GET /admin/categories
 router.get('/', async (req, res, next) => {
   try {
-    const { rows } = await db.query('SELECT * FROM categories ORDER BY sort_order ASC')
+    await ensureDefaultCategories(db)
+    const { rows } = await db.query(`
+      SELECT c.*
+      FROM categories c
+      LEFT JOIN categories parent ON parent.id = c.parent_id
+      ORDER BY
+        COALESCE(parent.sort_order, c.sort_order) ASC,
+        CASE WHEN c.parent_id IS NULL THEN 0 ELSE 1 END ASC,
+        c.sort_order ASC,
+        c.name ASC
+    `)
     res.json({ success: true, categories: rows })
   } catch (err) { next(err) }
 })
