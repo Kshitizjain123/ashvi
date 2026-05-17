@@ -5,7 +5,7 @@ const db = require('../config/db')
 router.get('/', async (req, res, next) => {
   try {
     const { rows } = await db.query(
-      `SELECT id, name, slug, parent_id, image_url, sort_order
+      `SELECT id, name, slug, parent_id, image_url, description, sort_order
        FROM categories
        WHERE is_active = true
        ORDER BY sort_order ASC, name ASC`

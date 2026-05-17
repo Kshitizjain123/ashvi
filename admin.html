@@ -94,13 +94,14 @@
     table { width: 100%; border-collapse: collapse; font-family: 'Figtree', sans-serif; font-size: 14px; }
     th { text-align: left; padding: 10px 20px; background: var(--cream); font-size: 11px;
          text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1px solid var(--border); }
-    td { padding: 12px 20px; border-bottom: 1px solid var(--border); color: var(--text); }
+    td { padding: 12px 20px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: var(--cream); }
     .product-thumb { width: 54px; height: 54px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--cream-dark);
                      display: flex; align-items: center; justify-content: center; color: var(--muted); }
     .product-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .product-thumb i { font-size: 20px; }
+    .table-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
     .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px;
              font-family: 'Figtree', sans-serif; text-transform: uppercase; letter-spacing: .04em; }
@@ -334,7 +335,7 @@
               <button class="btn-sm btn-success" onclick="openCategoryModal()">+ Add Category</button>
             </div>
             <table><thead><tr>
-              <th>Name</th><th>Slug</th><th>Description</th><th>Sort</th><th>Status</th><th>Actions</th>
+              <th>Name</th><th>Slug</th><th>Parent</th><th>Description</th><th>Sort</th><th>Status</th><th>Actions</th>
             </tr></thead>
             <tbody id="categories-tbody"></tbody></table>
           </div>
@@ -528,6 +529,9 @@
     <h3 id="category-modal-title">Add Category</h3>
     <div class="form-grid">
       <div class="field full"><label>Name</label><input type="text" id="cat-name" placeholder="e.g. Seasonal" /></div>
+      <div class="field full"><label>Parent Category</label>
+        <select id="cat-parent"><option value="">None — top level</option></select>
+      </div>
       <div class="field full"><label>Description</label><textarea id="cat-desc" style="min-height:70px" placeholder="Short blurb shown on the storefront"></textarea></div>
       <div class="field"><label>Image URL</label><input type="text" id="cat-img" placeholder="https://… or assets/…" /></div>
       <div class="field"><label>Sort Order</label><input type="number" id="cat-sort" value="0" min="0" /></div>
@@ -749,8 +753,8 @@
   async function loadProducts() {
     const [prodData, catData] = await Promise.all([api('/admin/products'), api('/admin/categories')])
     categories = catData.categories || []
-    document.getElementById('p-category').innerHTML = '<option value="">Select...</option>' +
-      categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+    loadedCategories = categories
+    document.getElementById('p-category').innerHTML = renderProductCategoryOptions(document.getElementById('p-category').value)
     if (!prodData.success) return
     loadedProducts = prodData.products.filter(p => p.is_active !== false)
     document.getElementById('products-tbody').innerHTML = loadedProducts.map(p => `
@@ -767,10 +771,12 @@
         <td>₹${Number(p.price).toLocaleString('en-IN')}</td>
         <td style="font-family:sans-serif">${p.stock}</td>
         <td><span class="badge ${p.is_active ? 'badge-delivered' : 'badge-cancelled'}">${p.is_active ? 'Active' : 'Inactive'}</span></td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn-sm" onclick="openEditProductModal('${p.id}')">Edit</button>
-          <button class="btn-sm" onclick="openImagesModal('${p.id}', '${p.name.replace(/'/g, '&#39;')}')">Images</button>
-          <button class="btn-sm btn-danger" data-delete-product="${p.id}">Remove</button>
+        <td>
+          <div class="table-actions">
+            <button class="btn-sm" onclick="openEditProductModal('${p.id}')">Edit</button>
+            <button class="btn-sm" onclick="openImagesModal('${p.id}', '${p.name.replace(/'/g, '&#39;')}')">Images</button>
+            <button class="btn-sm btn-danger" data-delete-product="${p.id}">Remove</button>
+          </div>
         </td>
       </tr>`).join('') || '<tr><td colspan="7" class="loading">No products yet</td></tr>'
   }
@@ -1177,30 +1183,58 @@
   let loadedCategories = []
   let editingCategoryId = null
 
+  function categoryNameById(id) {
+    const category = loadedCategories.find(c => c.id === id)
+    return category ? category.name : ''
+  }
+
+  function categoryLabel(c) {
+    const parentName = c.parent_id ? categoryNameById(c.parent_id) : ''
+    return parentName ? `${parentName} / ${c.name}` : c.name
+  }
+
+  function renderCategoryOptions(selectedId = '', excludeId = '') {
+    return '<option value="">None — top level</option>' +
+      loadedCategories
+        .filter(c => c.id !== excludeId && !c.parent_id)
+        .map(c => `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${c.name}</option>`)
+        .join('')
+  }
+
+  function renderProductCategoryOptions(selectedId = '') {
+    return '<option value="">Select...</option>' +
+      loadedCategories
+        .filter(c => c.is_active)
+        .map(c => `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${c.parent_id ? '&nbsp;&nbsp;↳ ' : ''}${categoryLabel(c)}</option>`)
+        .join('')
+  }
+
   async function loadCategories() {
-    document.getElementById('categories-tbody').innerHTML = '<tr><td colspan="6" class="loading">Loading…</td></tr>'
+    document.getElementById('categories-tbody').innerHTML = '<tr><td colspan="7" class="loading">Loading…</td></tr>'
     const data = await api('/admin/categories')
     if (!data.success) {
-      document.getElementById('categories-tbody').innerHTML = `<tr><td colspan="6" class="loading" style="color:#c0392b">${data.error?.message || 'Failed to load'}</td></tr>`
+      document.getElementById('categories-tbody').innerHTML = `<tr><td colspan="7" class="loading" style="color:#c0392b">${data.error?.message || 'Failed to load'}</td></tr>`
       return
     }
     loadedCategories = data.categories
     document.getElementById('categories-tbody').innerHTML = data.categories.map(c => `
       <tr>
-        <td><strong>${c.name}</strong></td>
+        <td><strong>${c.name}</strong>${c.parent_id ? '<br><small style="color:var(--muted);font-family:sans-serif">Subcategory</small>' : ''}</td>
         <td style="font-family:monospace;font-size:12px;color:var(--muted)">${c.slug}</td>
+        <td style="font-family:sans-serif;font-size:13px">${c.parent_id ? categoryNameById(c.parent_id) : '—'}</td>
         <td style="font-family:sans-serif;font-size:13px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.description || '—'}</td>
         <td style="font-family:sans-serif;text-align:center">${c.sort_order}</td>
         <td><span class="badge ${c.is_active ? 'badge-delivered' : 'badge-cancelled'}">${c.is_active ? 'Active' : 'Inactive'}</span></td>
-        <td style="display:flex;gap:6px">
-          <button class="btn-sm" onclick="openEditCategoryModal('${c.id}')">Edit</button>
-          <button class="btn-sm btn-danger" onclick="deleteCategory('${c.id}')">Delete</button>
+        <td>
+          <div class="table-actions">
+            <button class="btn-sm" onclick="openEditCategoryModal('${c.id}')">Edit</button>
+            <button class="btn-sm btn-danger" onclick="deleteCategory('${c.id}')">Delete</button>
+          </div>
         </td>
-      </tr>`).join('') || '<tr><td colspan="6" class="loading">No categories yet</td></tr>'
+      </tr>`).join('') || '<tr><td colspan="7" class="loading">No categories yet</td></tr>'
 
     // keep the product modal category dropdown in sync
-    document.getElementById('p-category').innerHTML = '<option value="">Select...</option>' +
-      data.categories.filter(c => c.is_active).map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+    document.getElementById('p-category').innerHTML = renderProductCategoryOptions(document.getElementById('p-category').value)
   }
 
   function openCategoryModal() {
@@ -1209,6 +1243,7 @@
     document.getElementById('category-modal-save-btn').textContent = 'Save Category'
     document.getElementById('cat-active-field').style.display = 'none'
     document.getElementById('cat-name').value  = ''
+    document.getElementById('cat-parent').innerHTML = renderCategoryOptions()
     document.getElementById('cat-desc').value  = ''
     document.getElementById('cat-img').value   = ''
     document.getElementById('cat-sort').value  = '0'
@@ -1223,6 +1258,7 @@
     document.getElementById('category-modal-save-btn').textContent = 'Update Category'
     document.getElementById('cat-active-field').style.display = ''
     document.getElementById('cat-name').value   = c.name || ''
+    document.getElementById('cat-parent').innerHTML = renderCategoryOptions(c.parent_id || '', c.id)
     document.getElementById('cat-desc').value   = c.description || ''
     document.getElementById('cat-img').value    = c.image_url || ''
     document.getElementById('cat-sort').value   = c.sort_order ?? 0
@@ -1240,6 +1276,7 @@
     if (!name) { alert('Name is required'); return }
     const body = {
       name,
+      parent_id: document.getElementById('cat-parent').value || null,
       description: document.getElementById('cat-desc').value.trim() || null,
       image_url:   document.getElementById('cat-img').value.trim() || null,
       sort_order:  parseInt(document.getElementById('cat-sort').value) || 0,

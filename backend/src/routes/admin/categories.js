@@ -32,14 +32,21 @@ router.post('/', async (req, res, next) => {
 // PATCH /admin/categories/:id
 router.patch('/:id', async (req, res, next) => {
   try {
-    const { name, image_url, sort_order, is_active, description } = req.body
+    const { name, parent_id, image_url, sort_order, is_active, description } = req.body
+    if (parent_id === req.params.id) {
+      throw new AppError('A category cannot be its own parent.', 400, 'VALIDATION_ERROR')
+    }
+    const hasParent = Object.prototype.hasOwnProperty.call(req.body, 'parent_id')
     await db.query(
       `UPDATE categories SET
-        name = COALESCE($1, name), image_url = COALESCE($2, image_url),
-        sort_order = COALESCE($3, sort_order), is_active = COALESCE($4, is_active),
-        description = COALESCE($5, description)
-       WHERE id = $6`,
-      [name, image_url, sort_order, is_active, description, req.params.id]
+        name = COALESCE($1, name),
+        parent_id = CASE WHEN $2 THEN $3 ELSE parent_id END,
+        image_url = COALESCE($4, image_url),
+        sort_order = COALESCE($5, sort_order),
+        is_active = COALESCE($6, is_active),
+        description = COALESCE($7, description)
+       WHERE id = $8`,
+      [name, hasParent, parent_id || null, image_url, sort_order, is_active, description, req.params.id]
     )
     res.json({ success: true })
   } catch (err) { next(err) }
@@ -51,6 +58,10 @@ router.delete('/:id', async (req, res, next) => {
     const { rows } = await db.query('SELECT COUNT(*) FROM products WHERE category_id = $1 AND is_active = true', [req.params.id])
     if (parseInt(rows[0].count) > 0) {
       throw new AppError('Cannot delete a category that has active products. Deactivate its products first.', 400, 'VALIDATION_ERROR')
+    }
+    const { rows: childRows } = await db.query('SELECT COUNT(*) FROM categories WHERE parent_id = $1', [req.params.id])
+    if (parseInt(childRows[0].count) > 0) {
+      throw new AppError('Cannot delete a category that has subcategories. Move or delete its subcategories first.', 400, 'VALIDATION_ERROR')
     }
     await db.query('DELETE FROM categories WHERE id = $1', [req.params.id])
     res.json({ success: true })
