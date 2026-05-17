@@ -168,6 +168,9 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
       <header className="nav">
         <div className="nav-inner">
           <div className="nav-left">
+            <button className={'nav-hamburger' + (overflowCategories.length ? ' nav-hamburger-overflow' : '')} aria-label="Open menu" onClick={() => setMenuOpen(true)}>
+              <span></span><span></span><span></span>
+            </button>
             <nav className="nav-links">
               <a className={'nav-link' + (currentPage === 'about' ? ' active' : '')} onClick={() => navigate({ page: 'about' })}>About</a>
               {inlineCategories.map(c => (
@@ -192,9 +195,6 @@ const Navbar = ({ currentPage, currentCategoryId, navigate, cartCount, openCart,
                 )
               ))}
             </nav>
-            <button className={'nav-hamburger' + (overflowCategories.length ? ' nav-hamburger-overflow' : '')} aria-label="Open menu" onClick={() => setMenuOpen(true)}>
-              <span></span><span></span><span></span>
-            </button>
           </div>
           <Logo onClick={() => navigate({ page: 'home' })} />
           <div className="nav-actions">
