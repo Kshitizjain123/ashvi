@@ -93,6 +93,26 @@
       };
     }
 
+    window.getCategoryProducts = function getCategoryProducts(category, products) {
+      const childIds = (category.subcategories || []).map((sub) => sub.id);
+      return products.filter((p) => {
+        if (category.parentId) return p.category === category.id || (p.category === category.parentId && p.festival === category.id);
+        if (childIds.length) return p.category === category.id || childIds.includes(p.category) || childIds.includes(p.festival);
+        return p.category === category.id;
+      });
+    }
+
+    window.withCategoryProductImages = function withCategoryProductImages(categories, products) {
+      return categories.map((category) => {
+        const firstProductImage = window.getCategoryProducts(category, products).find((p) => p.image)?.image;
+        return {
+          ...category,
+          image: firstProductImage || category.image,
+          subcategories: window.withCategoryProductImages(category.subcategories || [], products)
+        };
+      });
+    }
+
     function App() {
       const { TICKER_ITEMS: STATIC_TICKER, REVIEWS: STATIC_REVIEWS } = window.ASHVI_DATA;
       const staticCategories = window.ASHVI_DATA.CATEGORIES;
@@ -154,6 +174,10 @@
       };
       const removeItem = (id) => setCart(c => c.filter(x => x.id !== id));
       const cartCount = cart.reduce((s, c) => s + c.qty, 0);
+      const DISPLAY_CATEGORIES = useMemo(
+        () => window.withCategoryProductImages(CATEGORIES, PRODUCTS),
+        [CATEGORIES, PRODUCTS]
+      );
 
       // Apply accent tone tweak
       useEffect(() => {
@@ -171,9 +195,9 @@
 
       let pageEl;
       if (route.page === 'home') {
-        pageEl = <HomePage navigate={navigate} addToCart={addToCart} products={PRODUCTS} categories={CATEGORIES} reviews={REVIEWS} />;
+        pageEl = <HomePage navigate={navigate} addToCart={addToCart} products={PRODUCTS} categories={DISPLAY_CATEGORIES} reviews={REVIEWS} />;
       } else if (route.page === 'category') {
-        pageEl = <CategoryPage categoryId={route.categoryId} navigate={navigate} addToCart={addToCart} products={PRODUCTS} categories={CATEGORIES} />;
+        pageEl = <CategoryPage categoryId={route.categoryId} navigate={navigate} addToCart={addToCart} products={PRODUCTS} categories={DISPLAY_CATEGORIES} />;
       } else if (route.page === 'product') {
         pageEl = <ProductPage productId={route.productId} navigate={navigate} addToCart={addToCart} products={PRODUCTS} />;
       } else if (route.page === 'about') {
@@ -205,7 +229,7 @@
             cartCount={cartCount}
             openCart={() => setCartOpen(true)}
             openSearch={() => setSearchOpen(true)}
-            categories={CATEGORIES}
+            categories={DISPLAY_CATEGORIES}
           />
           {pageEl}
           <Footer navigate={navigate} />
