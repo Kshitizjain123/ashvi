@@ -113,6 +113,25 @@
       });
     }
 
+    window.mergeCategoryFallbacks = function mergeCategoryFallbacks(categories, fallbackCategories) {
+      return categories.map((category) => {
+        const fallback = fallbackCategories.find((c) => c.id === category.id);
+        const fallbackSubs = fallback ? (fallback.subcategories || []) : [];
+        const subcategories = (category.subcategories || []).length
+          ? window.mergeCategoryFallbacks(category.subcategories, fallbackSubs)
+          : fallbackSubs;
+
+        return {
+          ...category,
+          tag: category.tag || fallback?.tag || '',
+          blurb: category.blurb || fallback?.blurb || '',
+          long: category.long || fallback?.long || '',
+          image: category.image || fallback?.image || '',
+          subcategories
+        };
+      });
+    }
+
     function App() {
       const { TICKER_ITEMS: STATIC_TICKER, REVIEWS: STATIC_REVIEWS } = window.ASHVI_DATA;
       const staticCategories = window.ASHVI_DATA.CATEGORIES;
@@ -138,7 +157,10 @@
             setProducts(prodData.products.map(window.normalizeProduct));
           }
           if (catData.success && catData.categories.length > 0) {
-            setCategories(catData.categories.map(c => window.normalizeCategory(c)));
+            setCategories(window.mergeCategoryFallbacks(
+              catData.categories.map(c => window.normalizeCategory(c)),
+              staticCategories
+            ));
           }
           if (tickerData.success && tickerData.messages.length > 0) {
             setTickerItems(tickerData.messages.map(m => m.message));
